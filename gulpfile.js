@@ -7,6 +7,10 @@ var rename = require('gulp-rename');
 gulp.task('requirements', async() => {
     gulp.src('bower_components/jquery/dist/jquery.min.js')
         .pipe(gulp.dest('public/static'));
+    gulp.src('bower_components/toastr/toastr.min.js')
+        .pipe(gulp.dest('public/static'));
+    gulp.src('bower_components/toastr/toastr.min.css')
+        .pipe(gulp.dest('public/static'));
     gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
         .pipe(gulp.dest('public/static'));
     await gulp.src('bower_components/bootstrap/dist/js/bootstrap.min.js')
@@ -19,6 +23,7 @@ gulp.task('less',async()=>{
 });
 
 gulp.task('views', async() => {
+    gulp.src('src/views/**/.htaccess').pipe(gulp.dest('public'));
     await gulp.src(['src/views/**/*','!src/views/config*.php']).pipe(gulp.dest('public'));
 });
 

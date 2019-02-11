@@ -1,5 +1,27 @@
+.no-select{
+    user-select: none;
+    -moz-user-select: none;
+    -ms-touch-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.no-drag{
+    -webkit-user-drag: none;
+}
+
+.no-select-drag{
+    .no-select();
+    .no-drag();
+}
+
+div{
+    .no-select-drag();
+}
+
 h1, h2, h3, h4, h5 {
     letter-spacing: 3px;
+    .no-select-drag();
 }
 
 h3{
@@ -8,6 +30,8 @@ h3{
 
 label {
     letter-spacing: 1px;
+    color: #6f6f6f;
+    .no-select-drag();
 }
 
 mvisi{
@@ -19,11 +43,11 @@ mvisi{
 }
 
 .page-header{
-    margin-bottom: 2em;
+    margin-bottom: 1.8em;
 }
 
 .header{
-    margin-bottom: 1.25em;
+    margin: 0.8em 0;
 }
 
 .page-header h2{
@@ -42,6 +66,16 @@ mvisi{
 .form-row label{
     line-height: 38px;
     margin-bottom: 0;
+}
+
+.btn {
+    letter-spacing: 0.1rem;
+}
+
+.form-control {
+    padding: .375rem 1rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
 }
 
 @media(max-width: 576px){

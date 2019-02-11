@@ -1,5 +1,61 @@
 <?php if (isset($_POST['action'])) {
     //通过ajax执行动作
+    if ($_POST['action'] == 'install' && isset($_POST['sitename']) && isset($_POST['dbhost'])
+        && isset($_POST['dbport']) && isset($_POST['dbname']) &&  isset($_POST['dbusername']) && isset($_POST['dbpassword'])){
+        //安装
+        $mysqli = @new mysqli($_POST['dbhost'], $_POST['dbusername'], $_POST['dbpassword'], $_POST['dbname'],$_POST['dbport']);
+        if ($mysqli->connect_errno){
+            echo json_encode(array('type'=>'error','msg'=>'连接数据库错误：'.$mysqli->connect_error));
+            return;
+        }
+        $mysqli->query("set names 'utf8';");
+        $create_query = "CREATE TABLE `shortlinks` (
+            `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
+            `url` varchar(4096) DEFAULT NULL,
+            `ctime` int(11) DEFAULT NULL,
+            `expires` int(11) DEFAULT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=MyISAM AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8";
+        $create_query_custom = "CREATE TABLE `shortlinks_custom` (
+            `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
+            `cname` varchar(64) NOT NULL UNIQUE,
+            `url` varchar(4096) DEFAULT NULL,
+            `ctime` int(11) DEFAULT NULL,
+            `expires` int(11) DEFAULT NULL,
+            PRIMARY KEY (`cname`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+        $res_query = $mysqli->query($create_query);
+        if (!$res_query){
+            echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query->error));
+            return;
+        }
+        $res_query_custom = $mysqli->query($create_query_custom);
+        if (!$res_query_custom){
+            echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query_custom->error));
+            return;
+        }
+        $mysqli->close();
+        try{
+            $config = "<?php
+            //基本配置
+            define('SITE_NAME','".str_replace("'","\'",$_POST['sitename'])."');
+            //数据库配置
+            define('DB_HOST','".$_POST['dbhost']."');
+            define('DB_PORT','".$_POST['dbport']."');
+            define('DB_USER','".$_POST['dbusername']."');
+            define('DB_PASSWORD','".$_POST['dbpassword']."');
+            define('DB_NAME', '".$_POST['dbname']."');
+            ?>";
+            file_put_contents('../config.php', $config, LOCK_EX);
+            file_put_contents('../install.lock','');
+        } catch (Exception $e){
+            echo json_encode(array('type'=>'error','msg'=>'写入配置文件时出现错误:'.$e->getMessage()));
+            return;
+        }
+        echo json_encode(array('type'=>'success','msg'=>'安装完成，正在跳转至主页。'));
+    } else {
+        echo json_encode(array('type'=>'error','msg'=>'提交的参数错误。'));
+    }
 } else {
     //非执行动作时渲染页面
     ?>
@@ -12,8 +68,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="../static/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="../static/main.min.css" />
+        <link rel="stylesheet" type="text/css" href="../static/toastr.min.css" />
         <script src="../static/jquery.min.js"></script>
         <script src="../static/bootstrap.min.js"></script>
+        <script src="../static/toastr.min.js"></script>
     </head>
     <body class="install-body">
         <div class="container install-container" id="main-container">
@@ -45,9 +103,6 @@
                     }
                 ?>
             <div class="row">
-                <div class="col-lg-12 header">
-                    <h3>数据库配置</h3>
-                </div>
                 <?php if ($isConfigExisted){?>
                 <div class="col-lg-12">
                     <div class="alert alert-info alert-dismissible">
@@ -56,46 +111,108 @@
                     </div>
                 </div>
                 <?php }?>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 header">
+                    <h3>站点信息配置</h3>
+                </div>
                 <div class="col-lg-12">
                     <form>
                         <div class="form-row">
+                            <div class="col-sm-2"><label>站点名称</label></div>
+                            <div class="col-sm-10"><input type="text" id="i-sitename" class="form-control" value="<?php echo defined('SITE_NAME')?SITE_NAME:'BackRunner\'s ShortLink'?>"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 header">
+                    <h3>数据库配置</h3>
+                </div>
+                <div class="col-lg-12">
+                    <div>
+                        <div class="form-row">
                             <div class="col-sm-2"><label>地址</label></div>
-                            <div class="col-sm-10"><input type="text" class="form-control" value="<?php echo defined('DB_HOST')?DB_HOST:'localhost'?>"></div>
+                            <div class="col-sm-10"><input type="text" id="i-dbhost" class="form-control" value="<?php echo defined('DB_HOST')?DB_HOST:'localhost'?>"></div>
                         </div>
                         <div class="form-row">
                             <div class="col-sm-2"><label>端口</label></div>
-                            <div class="col-sm-10"><input type="number" max="65535" class="form-control" value="<?php echo defined('DB_PORT')?DB_PORT:'3306'?>"></div>
+                            <div class="col-sm-10"><input type="number" id="i-dbport" max="65535" class="form-control" value="<?php echo defined('DB_PORT')?DB_PORT:'3306'?>"></div>
                         </div>
                         <div class="form-row">
                             <div class="col-sm-2"><label>数据库名称</label></div>
-                            <div class="col-sm-10"><input type="text" class="form-control" value="<?php echo defined('DB_NAME')?DB_NAME:''?>"></div>
+                            <div class="col-sm-10"><input type="text" id="i-dbname" class="form-control" value="<?php echo defined('DB_NAME')?DB_NAME:'brshortlink'?>"></div>
                         </div>
                         <div class="form-row">
                             <div class="col-sm-2"><label>数据库用户名</label></div>
-                            <div class="col-sm-10"><input type="text" class="form-control"  value="<?php echo defined('DB_USERNAME')?DB_USERNAME:''?>"></div>
+                            <div class="col-sm-10"><input type="text" id="i-dbusername" class="form-control"  value="<?php echo defined('DB_USERNAME')?DB_USERNAME:'root'?>"></div>
                         </div>
                         <div class="form-row">
                             <div class="col-sm-2"><label>数据库密码</label></div>
-                            <div class="col-sm-10"><input type="password" class="form-control" value="<?php echo defined('DB_PASSWORD')?DB_PASSWORD:'3306'?>"></div>
+                            <div class="col-sm-10"><input type="password" id="i-dbpassword" class="form-control" value="<?php echo defined('DB_PASSWORD')?DB_PASSWORD:''?>"></div>
                         </div>
                         <mhide>
                         <div class="form-row">
                             <div class="col-sm-10"></div>
-                            <div class="col-sm-2"><button class="btn btn-block btn-primary" style="float:right;">安装</button></div>
+                            <div class="col-sm-2"><button class="btn btn-block btn-primary" id="btn-submitinstall" onclick="submitInstall();">安装</button></div>
                         </div>
                         </mhide>
                         <mvisi>
                         <div class="form-row">
                             <div class="col-sm-2"><label>安装</label></div>
-                            <div class="col-sm-10"><button class="btn btn-block btn-primary" style="float:right;">安装</button></div>
+                            <div class="col-sm-10"><button class="btn btn-block btn-primary" id="btn-submitinstall-mobile" onclick="submitInstall();">安装</button></div>
                         </div>
                         </mvisi>
-                    </form>
+                    </div>
                 </div>
             </div>
             <?php }?>
         </div>
+        <script>
+            function submitInstall(){
+                $('.btn').attr('disabled','disabled');
+                $('.input').attr('disabled','disabled');
+                $.ajax({
+                    url: '/install/install.php',
+                    type:'POST',
+                    data:{
+                        action: 'install',
+                        sitename: $('#i-sitename').val(),
+                        dbhost: $('#i-dbhost').val(),
+                        dbport: $('#i-dbport').val(),
+                        dbname: $('#i-dbname').val(),
+                        dbusername: $('#i-dbusername').val(),
+                        dbpassword: $('#i-dbpassword').val()
+                    },
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data);
+                        $('.btn').removeAttr('disabled');
+                        $('.input').removeAttr('disabled');
+                        if (data.type == 'success'){
+                            toastr.success(data.msg);
+                            setTimeout(function(){
+                                window.location.href="/";
+                            },2500);
+                        } else {
+                            toastr.error(data.msg);
+                        }
+                    },
+                    error: function(data){
+                        console.log(data);
+                        $('.btn').removeAttr('disabled');
+                        $('.input').removeAttr('disabled');
+                        toastr.error(htmlEncode(data.responseText));
+                    }
+                });
+            }
+
+            function htmlEncode(s){
+                var div = document.createElement('div');
+                div.appendChild(document.createTextNode(s));
+                return div.innerHTML;
+            }
+        </script>
     </body>
     </html>
-
 <?php }?>
