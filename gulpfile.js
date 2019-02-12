@@ -21,6 +21,9 @@ gulp.task('requirements', async() => {
         .pipe(gulp.dest('public/static/fonts'));
     gulp.src('node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css').pipe(cssmin())
         .pipe(gulp.dest('public/static'));
+    //animate.css
+    gulp.src('node_modules/animate.css/animate.min.css')
+        .pipe(gulp.dest('public/static'));
     //crypto
     gulp.src('bower_components/crypto-js/crypto-js.js')
         .pipe(uglify())

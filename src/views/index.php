@@ -7,6 +7,25 @@ if (file_exists('./install.lock')){
         echo 'GET Parament: u - '.$_GET['u'];
     } else if (isset($_GET['action'])){
     //动作 -> 创建短链接
+        if ($_GET['action'] == 'shortlink'){
+            if (isset($_GET['link_type']) && isset($_GET['long_link'])){
+                if ($_GET['link_type'] == 'normal'){
+                    
+                } else if ($_GET['link_type'] == 'custom'){
+                    if (isset($_GET['custom_link'])){
+
+                    } else {
+                        echo json_encode(array('type'=>'error','error_code'=>401,'error'=>'提交的参数不完整。'));
+                    }
+                } else {
+                    echo json_encode(array('type'=>'error','error_code'=>400,'error'=>'参数错误。'));
+                }
+            } else {
+                echo json_encode(array('type'=>'error','error_code'=>401,'error'=>'提交的参数不完整。'));
+            }
+        } else {
+            echo json_encode(array('type'=>'error','error_code'=>400,'error'=>'参数错误。'));
+        }
     } else {
     //默认首页
 ?>
@@ -24,6 +43,7 @@ if (file_exists('./install.lock')){
     <link rel="stylesheet" type="text/css" href="../static/main.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/toastr.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/awesome-bootstrap-checkbox.css" />
     <script src="../static/jquery.min.js"></script>
     <script src="../static/bootstrap.min.js"></script>
@@ -36,7 +56,7 @@ if (file_exists('./install.lock')){
     <div class="container index-container" id="main-container">
         <div class="row">
             <div class="col-lg-12 page-header">
-                <h2>B<mhide>ack</mhide>R<mhide>unner</mhide>'s ShortLink</h2>
+                <h2><?php displayTitle();?></h2>
             </div>
         </div>
         <div class="row">
@@ -72,7 +92,18 @@ if (file_exists('./install.lock')){
                     <input type="text" id="i-customlink" class="form-control">
                 </div>
                 <div class="link-generatebtn">
-                    <button class="btn btn-primary">生成</button>
+                    <button class="btn btn-primary" id="btn-generate" onclick="checkSubmit();">生成</button>
+                </div>
+            </div>
+        </div>
+        <div class="row row-generated">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <span>你的短链接</span>
+                    </div>
+                    <div class="card-body" id="link-card-body">
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,39 +111,64 @@ if (file_exists('./install.lock')){
     <script>
         //api
         var api = getCookie('api-choice');
+        var use_custom_link = false;
         //初始化
-        if (api == null){
-            api = 0;
-            $('#r-localsite').prop("checked",true);
-        } else if (api == "0"){
-            $('#r-localsite').prop("checked",true);
-        } else if (api == "1"){
-            $('#r-sinaapp').prop("checked",true);
-        }
-        var customlink_status = getCookie('customlink-status');
-        if (customlink_status == '1'){
-            $('#cb_customlink').prop("checked",true);
-            $('#i-customlink').attr('style', 'display: inline-block;');
-        }
-        //绑定事件
-        $('#cb_customlink').change(function(){
-            if ($('#i-customlink').attr('style') != undefined){
-                $('#i-customlink').removeAttr('style');
-                customlink_status = 0;
-                setCookie('customlink-status', customlink_status, 30);
-            } else {
-                $('#i-customlink').attr('style', 'display: inline-block;');
-                customlink_status = 1;
-                setCookie('customlink-status', customlink_status, 30);
+        $(document).ready(function(){
+            if (api == null){
+                api = 0;
+                $('#r-localsite').prop("checked",true);
+            } else if (api == "0"){
+                $('#r-localsite').prop("checked",true);
+                if ($('#cb_customlink').attr('disabled') != undefined){
+                    $('#cb_customlink').removeAttr('disabled');
+                }
+            } else if (api == "1"){
+                $('#r-sinaapp').prop("checked",true);
+                $('#cb_customlink').attr('disabled','disabled');
             }
-        });
-        $('#r-localsite').click(function(){
-            api = 0;
-            setCookie('api-choice', api, 30);
-        });
-        $('#r-sinaapp').click(function(){
-            api = 1;
-            setCookie('api-choice', api, 30);
+            var customlink_status = getCookie('customlink-status');
+            if (customlink_status == '1'){
+                $('#cb_customlink').prop("checked",true);
+                if ($(window).width()>=576){
+                    $('.customlink-input').attr('style', 'display: inline-block;');
+                } else {
+                    $('.customlink-checkbox').attr('style','display: block');
+                    $('.customlink-input').attr('style', 'display: block;');
+                }
+            }
+            //绑定事件
+            $('#cb_customlink').change(function(){
+                use_custom_link = !use_custom_link;
+                if ($('.customlink-input').attr('style') != undefined){
+                    if ($(window).width() < 576){
+                        $('.customlink-checkbox').removeAttr('style');
+                    }
+                    $('.customlink-input').removeAttr('style');
+                    customlink_status = 0;
+                    setCookie('customlink-status', customlink_status, 30);
+                } else {
+                    if ($(window).width()>=576){
+                        $('.customlink-input').attr('style', 'display: inline-block;');
+                    } else {
+                        $('.customlink-checkbox').attr('style','display: block');
+                        $('.customlink-input').attr('style', 'display: block;');
+                    }
+                    customlink_status = 1;
+                    setCookie('customlink-status', customlink_status, 30);
+                }
+            });
+            $('#r-localsite').click(function(){
+                api = 0;
+                setCookie('api-choice', api, 30);
+                if ($('#cb_customlink').attr('disabled') != undefined){
+                    $('#cb_customlink').removeAttr('disabled');
+                }
+            });
+            $('#r-sinaapp').click(function(){
+                api = 1;
+                setCookie('api-choice', api, 30);
+                $('#cb_customlink').attr('disabled','disabled');
+            });
         });
     </script>
 </body>

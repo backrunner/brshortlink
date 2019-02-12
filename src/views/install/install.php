@@ -18,6 +18,13 @@
             `expires` int(11) DEFAULT NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=MyISAM AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8";
+        $create_query_log = "CREATE TABLE `shortlinks_log` (
+            `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
+            `linkid` int(11) unsigned NOT NULL,
+            `count` bigint(20) unsigned NOT NULL,
+            `lasttime` int(11) unsigned DEFAULT NULL,
+            PRIMARY KEY (`linkid`);
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
         $create_query_custom = "CREATE TABLE `shortlinks_custom` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `cname` varchar(64) NOT NULL UNIQUE,
