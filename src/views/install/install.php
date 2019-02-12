@@ -1,7 +1,8 @@
-<?php if (isset($_POST['action'])) {
+<?php if (isset($_POST['action']) && !file_exists('../install.lock')) {
     //通过ajax执行动作
     if ($_POST['action'] == 'install' && isset($_POST['sitename']) && isset($_POST['dbhost'])
-        && isset($_POST['dbport']) && isset($_POST['dbname']) &&  isset($_POST['dbusername']) && isset($_POST['dbpassword'])){
+        && isset($_POST['dbport']) && isset($_POST['dbname']) &&  isset($_POST['dbusername'])
+        && isset($_POST['dbpassword']) && isset($_POST['mgusername']) && isset($_POST['mgpassword'])){
         //安装
         $mysqli = @new mysqli($_POST['dbhost'], $_POST['dbusername'], $_POST['dbpassword'], $_POST['dbname'],$_POST['dbport']);
         if ($mysqli->connect_errno){
@@ -11,19 +12,37 @@
         $mysqli->query("set names 'utf8';");
         $create_query = "CREATE TABLE `shortlinks` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
-            `url` varchar(4096) DEFAULT NULL,
-            `ctime` int(11) DEFAULT NULL,
+            `url` varchar(4096) NOT NULL,
+            `urlhash` varchar(40) NOT NULL UNIQUE,
+            `ctime` int(11) unsigned NOT NULL,
             `expires` int(11) DEFAULT NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=MyISAM AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8";
         $create_query_custom = "CREATE TABLE `shortlinks_custom` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `cname` varchar(64) NOT NULL UNIQUE,
-            `url` varchar(4096) DEFAULT NULL,
-            `ctime` int(11) DEFAULT NULL,
+            `url` varchar(4096) NOT NULL,
+            `ctime` int(11) unsigned NOT NULL,
             `expires` int(11) DEFAULT NULL,
             PRIMARY KEY (`cname`)
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+        $create_query_user = "CREATE TABLE `managers` (
+            `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
+            `username` varchar(32) NOT NULL UNIQUE,
+            `password` varchar(64) NOT NULL,
+            `ctime` int(11) unsigned NOT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+        $create_query_userlog = "CREATE TABLE `managers_log` (
+            `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
+            `userid` int(11) unsigned NOT NULL,
+            `logintime` int(11) unsigned NOT NULL,
+            `loginip` varchar(20) DEFAULT NULL,
+            INDEX (`userid`),
+            INDEX (`logintime`),
+            INDEX (`loginip`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+        $create_query_manager = 'INSERT INTO `managers` (username, password, ctime) VALUES ("'.$_POST['mgusername'].'","'.hash('sha256', $_POST['mgpassword']).'", '.time().')';
         $res_query = $mysqli->query($create_query);
         if (!$res_query){
             echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query->error));
@@ -32,6 +51,21 @@
         $res_query_custom = $mysqli->query($create_query_custom);
         if (!$res_query_custom){
             echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query_custom->error));
+            return;
+        }
+        $res_query_user = $mysqli->query($create_query_user);
+        if (!$res_query_user){
+            echo json_encode(array('type'=>'error','msg'=>'创建用户表时发生错误:'.$res_query_user->error));
+            return;
+        }
+        $res_query_userlog = $mysqli->query($create_query_userlog);
+        if (!$res_query_userlog){
+            echo json_encode(array('type'=>'error','msg'=>'创建用户日志表时发生错误:'.$res_query_userlog->error));
+            return;
+        }
+        $res_query_manager = $mysqli->query($create_query_manager);
+        if (!$res_query_manager){
+            echo json_encode(array('type'=>'error','msg'=>'创建管理员时发生错误:'.$res_query_manager->error));
             return;
         }
         $mysqli->close();
@@ -72,6 +106,7 @@
         <script src="../static/jquery.min.js"></script>
         <script src="../static/bootstrap.min.js"></script>
         <script src="../static/toastr.min.js"></script>
+        <script src="../static/crypto-js.js"></script>
     </head>
     <body class="install-body">
         <div class="container install-container" id="main-container">
@@ -123,6 +158,23 @@
                             <div class="col-sm-10"><input type="text" id="i-sitename" class="form-control" value="<?php echo defined('SITE_NAME')?SITE_NAME:'BackRunner\'s ShortLink'?>"></div>
                         </div>
                     </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 header">
+                    <h3>管理员配置</h3>
+                </div>
+                <div class="col-lg-12">
+                    <div>
+                        <div class="form-row">
+                            <div class="col-sm-2"><label>管理员用户名</label></div>
+                            <div class="col-sm-10"><input type="text" id="i-mgusername" class="form-control"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-sm-2"><label>管理员密码</label></div>
+                            <div class="col-sm-10"><input type="password" id="i-mgpassword" class="form-control"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -182,7 +234,9 @@
                         dbport: $('#i-dbport').val(),
                         dbname: $('#i-dbname').val(),
                         dbusername: $('#i-dbusername').val(),
-                        dbpassword: $('#i-dbpassword').val()
+                        dbpassword: $('#i-dbpassword').val(),
+                        mgusername: $('#i-mgusername').val(),
+                        mgpassword: CryptoJS.SHA256($('#i-mgpassword').val()).toString(),
                     },
                     dataType: 'json',
                     success: function(data){
