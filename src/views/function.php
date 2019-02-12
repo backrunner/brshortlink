@@ -1,4 +1,9 @@
 <?php
+//sql
+
+
+
+//display
 function displayTitle() {
     if (defined('SITE_NAME')) {
         if (SITE_NAME != 'BackRunner\'s ShortLink') {

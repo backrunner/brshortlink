@@ -10,7 +10,7 @@ if (file_exists('./install.lock')){
         if ($_GET['action'] == 'shortlink'){
             if (isset($_GET['link_type']) && isset($_GET['long_link'])){
                 if ($_GET['link_type'] == 'normal'){
-                    
+
                 } else if ($_GET['link_type'] == 'custom'){
                     if (isset($_GET['custom_link'])){
 

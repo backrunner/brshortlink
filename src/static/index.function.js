@@ -1,3 +1,6 @@
+//copyright
+console.log('%cShortLink System%cDeveloped by BackRunner from pwp.app\nAn open source application under MIT license.','font-size:20px;color:#1faeff;','font-size: 12px;color:#8f8f8f;');
+
 //cookie
 /*
     setCookie(name,value,day)
@@ -108,7 +111,28 @@ function requestShortLink(link, custom_link){
             type: 'POST',
             data: {
                 action: 'shortlink',
-                
+                link_type: use_custom_link?'custom':'normal',
+                long_link: link,
+                custom_link: custom_link
+            },
+            dataType: 'json',
+            success: function(data){
+                if (data.error_code != undefined){
+                    if ($('.row-generated').attr('style') == undefined){
+                        $('.row-generated').attr('style','display:block');
+                        animateCSS('.row-generated', 'fadeIn', 'faster');
+                    }
+                    $('#link-card-body').html('<a href=\''+ data.short_link +'\'>'+ data.short_link +'</a>');
+                } else {
+                    $('#btn-generate').removeAttr('disabled','disabled');
+                    toastr.error(data.error);
+                }
+            },
+            error: function(e){
+                console.error('%cShortLink System 错误', 'font-size:16px;color:white;');
+                console.error(e);
+                $('#btn-generate').removeAttr('disabled','disabled');
+                toastr.error('无法提交请求。');
             }
         });
     } else if (api == 1){
@@ -136,6 +160,7 @@ function requestShortLink(link, custom_link){
                 }
             },
             error: function(e){
+                console.error('%cShortLink System 错误', 'font-size:16px;color:white;');
                 console.error(e);
                 $('#btn-generate').removeAttr('disabled','disabled');
                 toastr.error('无法提交请求。');
