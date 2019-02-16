@@ -4,6 +4,8 @@ var less = require('gulp-less');
 var cssmin = require('gulp-clean-css');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
+var htmlmin = require('gulp-htmlmin');
 
 gulp.task('requirements', async() => {
     //jquery
@@ -28,6 +30,17 @@ gulp.task('requirements', async() => {
     gulp.src('bower_components/crypto-js/crypto-js.js')
         .pipe(uglify())
         .pipe(gulp.dest('public/static'));
+    //moment & tempusdominus
+    gulp.src(['bower_components/moment/moment.js','bower_components/moment/locale/zh-cn.js'])
+        .pipe(concat('moment.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('public/static'));
+    gulp.src('src/static/tempusdominus/*.js')
+        .pipe(gulp.dest('public/static'));
+    gulp.src('src/static/tempusdominus/tempusdominus.css')
+        .pipe(cssmin())
+        .pipe(rename('tempusdominus.min.css'))
+        .pipe(gulp.dest('public/static'));
     //bootstrap
     gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
         .pipe(gulp.dest('public/static'));
@@ -43,7 +56,19 @@ gulp.task('less',async()=>{
 gulp.task('views', async() => {
     gulp.src('src/static/*.js').pipe(uglify()).pipe(gulp.dest('public/static'));
     gulp.src('src/views/**/.htaccess').pipe(gulp.dest('public'));
-    await gulp.src(['src/views/**/*','!src/views/config*.php']).pipe(gulp.dest('public'));
+    var htmloptions = {
+        collapseWhitespace:true,
+        collapseBooleanAttributes:true,
+        removeComments:true,
+        removeEmptyAttributes:false,
+        removeScriptTypeAttributes:false,
+        removeStyleLinkTypeAttributes:false,
+        minifyJS:true,
+        minifyCSS:true
+    };
+    gulp.src('src/views/index.default.php').pipe(htmlmin(htmloptions)).pipe(gulp.dest('public'));
+    gulp.src('src/views/index.error.php').pipe(htmlmin(htmloptions)).pipe(gulp.dest('public'));
+    await gulp.src(['src/views/**/*', '!src/views/index.default.php','!src/views/index.error.php']).pipe(gulp.dest('public'));
 });
 
 gulp.task('clean', async() => {

@@ -13,17 +13,18 @@
         $create_query = "CREATE TABLE `shortlinks` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `url` varchar(4096) NOT NULL,
-            `urlhash` varchar(40) NOT NULL UNIQUE,
+            `urlhash` varchar(40) NOT NULL,
             `ctime` int(11) unsigned NOT NULL,
             `expires` int(11) DEFAULT NULL,
-            PRIMARY KEY (`id`)
+            PRIMARY KEY (`id`),
+            INDEX (`urlhash`)
         ) ENGINE=MyISAM AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8";
         $create_query_log = "CREATE TABLE `shortlinks_log` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `linkid` int(11) unsigned NOT NULL,
             `count` bigint(20) unsigned NOT NULL,
             `lasttime` int(11) unsigned DEFAULT NULL,
-            PRIMARY KEY (`linkid`);
+            PRIMARY KEY (`linkid`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
         $create_query_custom = "CREATE TABLE `shortlinks_custom` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
@@ -60,6 +61,11 @@
             echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query_custom->error));
             return;
         }
+        $res_query_log = $mysqli->query($create_query_log);
+        if (!$res_query_log){
+            echo json_encode(array('type'=>'error','msg'=>'创建日志表时发生错误:'.$res_query_log->error));
+            return;
+        }
         $res_query_user = $mysqli->query($create_query_user);
         if (!$res_query_user){
             echo json_encode(array('type'=>'error','msg'=>'创建用户表时发生错误:'.$res_query_user->error));
@@ -77,7 +83,7 @@
         }
         $mysqli->close();
         try{
-            $config = "<?php
+            $config = str_replace("\t","","<?php
             //基本配置
             define('SITE_NAME','".str_replace("'","\'",$_POST['sitename'])."');
             //数据库配置
@@ -86,7 +92,7 @@
             define('DB_USER','".$_POST['dbusername']."');
             define('DB_PASSWORD','".$_POST['dbpassword']."');
             define('DB_NAME', '".$_POST['dbname']."');
-            ?>";
+            ?>");
             file_put_contents('../config.php', $config, LOCK_EX);
             file_put_contents('../install.lock','');
         } catch (Exception $e){
@@ -204,7 +210,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-sm-2"><label>数据库用户名</label></div>
-                            <div class="col-sm-10"><input type="text" id="i-dbusername" class="form-control"  value="<?php echo defined('DB_USERNAME')?DB_USERNAME:'root'?>"></div>
+                            <div class="col-sm-10"><input type="text" id="i-dbusername" class="form-control"  value="<?php echo defined('DB_USER')?DB_USER:'root'?>"></div>
                         </div>
                         <div class="form-row">
                             <div class="col-sm-2"><label>数据库密码</label></div>
