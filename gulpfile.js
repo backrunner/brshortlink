@@ -68,8 +68,7 @@ gulp.task('views', async() => {
     };
     gulp.src('src/views/index.default.php').pipe(htmlmin(htmloptions)).pipe(gulp.dest('public'));
     gulp.src('src/views/index.error.php').pipe(htmlmin(htmloptions)).pipe(gulp.dest('public'));
-    gulp.src('src/views/install/install.default.php').pipe(htmlmin(htmloptions)).pipe(gulp.dest('public/install'));
-    await gulp.src(['src/views/**/*', '!src/views/index.default.php','!src/views/index.error.php','!src/views/install/install.default.php']).pipe(gulp.dest('public'));
+    await gulp.src(['src/views/**/*', '!src/views/index.default.php','!src/views/index.error.php']).pipe(gulp.dest('public'));
 });
 
 gulp.task('clean', async() => {

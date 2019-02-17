@@ -144,7 +144,17 @@
         <?php }?>
     </div>
     <script>
-        var stat_enabled = false;
+        <?php
+        if (defined('STAT_ENABLED')){
+            echo 'var stat_enabled = '.STAT_ENABLED.';';
+            if (STAT_ENABLED){
+                echo "$(document).ready(function(){
+                    $('#cb_stat').prop('checked',true);
+                });";
+            }
+        } else {
+            echo 'var stat_enabled = false;';
+        }?>
 
         $(document).ready(function(){
             $('#cb_stat').change(function(){

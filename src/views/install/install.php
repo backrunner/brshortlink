@@ -19,7 +19,7 @@
             `expires` int(11) DEFAULT NULL,
             PRIMARY KEY (`id`),
             INDEX (`urlhash`)
-        ) ENGINE=MyISAM AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8";
+        ) ENGINE=MyISAM AUTO_INCREMENT=".rand(10000,50000)." DEFAULT CHARSET=utf8";
         $create_query_log = "CREATE TABLE `shortlinks_log` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `linkid` int(11) unsigned NOT NULL,

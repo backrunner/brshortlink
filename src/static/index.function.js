@@ -238,7 +238,7 @@ function requestShortLink(link, custom_link, expires){
     } else if (api == 1){
         $('#btn-generate').attr('disabled','disabled');
         $.ajax({
-            url: 'http://api.t.sina.com.cn/short_url/shorten.json',
+            url: 'https://cors-anywhere.herokuapp.com/https://api.t.sina.com.cn/short_url/shorten.json',
             type: 'GET',
             data:{
                 source: 3271760578,
@@ -247,24 +247,28 @@ function requestShortLink(link, custom_link, expires){
             dataType: 'json',
             success: function(data){
                 $('#btn-generate').removeAttr('disabled','disabled');
-                if (data.error_code != undefined){
-                    if (data.error_code == 400){
-                        toastr.error('输入的URL不合法，请重试。');
-                    }
-                } else {
-                    if ($('.row-generated').attr('style') == undefined){
-                        $('.row-generated').attr('style','display:block');
-                        animateCSS('.row-generated', 'fadeIn', 'faster');
-                    }
-                    $('#link-card-body').html('<a href=\''+ data.url_short +'\'>'+ data.url_short +'</a>');
-                    toastr.success('短链接生成成功。');
+                if ($('.row-generated').attr('style') == undefined){
+                    $('.row-generated').attr('style','display:block');
+                    animateCSS('.row-generated', 'fadeIn', 'faster');
                 }
+                $('#link-card-body').html('<a href=\''+ data[0].url_short +'\'>'+ data[0].url_short +'</a>');
+                toastr.success('短链接生成成功。');
             },
             error: function(e){
                 console.error('%cShortLink System - Error', 'font-size:15px;color:red;');
                 console.error(e);
-                $('#btn-generate').removeAttr('disabled','disabled');
-                toastr.error('无法提交请求。');
+                if (typeof e.responseJSON != 'undefined'){
+                    if (e.responseJSON.error_code != 400){
+                        $('#btn-generate').removeAttr('disabled','disabled');
+                        toastr.error('无法提交请求。');
+                    } else {
+                        $('#btn-generate').removeAttr('disabled','disabled');
+                        toastr.error('提交的URL不合法。');
+                    }
+                } else {
+                    $('#btn-generate').removeAttr('disabled','disabled');
+                    toastr.error('无法提交请求。');
+                }
             }
         });
     }

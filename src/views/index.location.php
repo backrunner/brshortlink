@@ -3,7 +3,6 @@ $u = trim($_GET['u']);
 $error_code = 200;
 //优先查询普通
 $id = f62to10($u);
-echo $id;
 $stmt = $mysqli->prepare('SELECT url,expires FROM shortlinks WHERE id=?');
 $stmt->bind_param('i',$id);
 $stmt->bind_result($url, $expires);
