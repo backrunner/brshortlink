@@ -4,13 +4,14 @@ if (file_exists('./install.lock')){
     include_once('./function.php');
 
     if ($mysqli->connect_errno){
+        $error_code = 100;  //无法连接到数据库
         include_once('./index.error.php');
         return;
     }
 
     if (isset($_GET['u'])){
     //跳转
-        echo 'GET Parament: u - '.$_GET['u'];
+        include_once('./index.location.php');
     } else if (isset($_GET['action'])){
     //动作 -> 创建短链接
         include_once('./index.shortlink.php');
