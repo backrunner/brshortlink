@@ -2,11 +2,16 @@
 if ($_GET['action'] == 'shortlink'){
     if (isset($_GET['link_type']) && isset($_GET['long_link'])){
         $long_link = trim($_GET['long_link']);
+        if (!preg_match("/(https?|ftp|file|steam):\/\/[-A-Za-z0-9+&@#\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\/%=~_|]/", $long_link)){
+            echo json_encode(array('type'=>'error','error_code'=>404,'error'=>'请勿提交非法URL。'));
+            return;
+        }
         if ($_GET['link_type'] == 'normal'){
             //普通链接
             $link_hash = sha1($long_link);  //先计算hash，后面会用到
             if (isset($_GET['expires'])){
                 //有过期时间的不查重
+
                 $exp = intval($_GET['expires']);
                 if (check_expires($exp)){
                     //预处理插入

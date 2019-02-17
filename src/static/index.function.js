@@ -60,7 +60,7 @@ function animateCSS(element, animationName, speed, callback) {
 }
 
 function IsURL(str_url){
-    var strRegex = "^(http|https|ftp|steam)\:\/\/([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|localhost|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.([a-zA-Z]{2,7}))(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\?\'\\\+&%\$#\=~_\-]+))*$";
+    var strRegex = "(https?|ftp|file|steam)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
     var re=new RegExp(strRegex);
     if (re.test(str_url)){
         return true;
@@ -176,7 +176,7 @@ function checkExpires(){
 }
 
 function str10to62(number) {
-    var chars = '0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ'.split(''),
+    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
       radix = chars.length,
       qutient = +number,
       arr = [];
