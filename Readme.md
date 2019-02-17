@@ -8,9 +8,28 @@
 
 php 7.2, MySQL 5.7, Apache 2.4.x
 
+打包本项目需要：
+
+NodeJS
+
+bower, gulp, gulp-less, gulp-clean-css, gulp-rename, gulp-uglify, gulp-htmlmin
+
+```bash
+npm install -g bower
+npm install -g gulp
+npm install gulp-less gulp-clean-css gulp-rename gulp-uglift gulp-htmlmin --save-dev
+```
+
 ## 使用方式
 
-使用Git拉取本项目或直接下载源码，在项目根目录执行下列命令：
+使用Git拉取本项目或直接下载源码，之后在项目根目录执行以下命令补齐依赖：
+
+```bash
+bower install
+npm install
+```
+
+在项目根目录执行下列命令：
 
 ```bash
 gulp clean-build
@@ -35,6 +54,8 @@ gulp build
 ```
 
 仍然执行clean-build会导致你的配置文件被清除。
+
+如果你不想自己手动打包，你也可以选择直接使用已经打包好的发行版本（>=1.0），但这种做法是不推荐的。
 
 ## 开发计划
 
