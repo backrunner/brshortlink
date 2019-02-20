@@ -39,13 +39,13 @@
                 <div class="form-group link-form">
                     <label style="display:inline-block">URL</label>
                     <div class="link-apichoice">
-                        <div class="abc-radio abc-radio-primary link-apiradio">
+                        <div class="abc-radio abc-radio-primary link-apiradio radio-localsite">
                             <input type="radio" id="r-localsite" name="r-api">
                             <label for="r-localsite">
                                 <?php echo $_SERVER['HTTP_HOST'];?>
                             </label>
                         </div>
-                        <div class="abc-radio abc-radio-primary link-apiradio" style="padding-left:12px;">
+                        <div class="abc-radio abc-radio-primary link-apiradio">
                             <input type="radio" id="r-sinaapp" name="r-api">
                             <label for="r-sinaapp">
                                 t.cn
@@ -135,12 +135,12 @@
             $('#cb_customlink').change(function(){
                 use_custom_link = !use_custom_link;
                 if ($('.customlink-input').attr('style') != undefined){
-                    if ($(window).width() < 576){
+                    if ($(window).width() < 1366){
                         $('.customlink-checkbox').removeAttr('style');
                     }
                     $('.customlink-input').removeAttr('style');
                 } else {
-                    if ($(window).width()>=576){
+                    if ($(window).width()>=1366){
                         $('.customlink-input').attr('style', 'display: inline-block;');
                     } else {
                         $('.customlink-checkbox').attr('style','display: block');
@@ -152,12 +152,12 @@
             $('#cb_expires').change(function(){
                 use_link_expires = !use_link_expires;
                 if ($('.expires-container').attr('style') != undefined){
-                    if ($(window).width() < 576){
+                    if ($(window).width() < 1366){
                         $('.expires-checkbox').removeAttr('style');
                     }
                     $('.expires-container').removeAttr('style');
                 } else {
-                    if ($(window).width()>=576){
+                    if ($(window).width()>=1366){
                         $('.expires-container').attr('style', 'display: inline-block;');
                     } else {
                         $('.expires-checkbox').attr('style','display: block');
@@ -192,6 +192,25 @@
 
             $('#expires-timepicker').datetimepicker({
                 minDate: moment().startOf('minute')
+            });
+
+            var resizeChanged = false;
+
+            $(window).resize(function(){
+                //执行代码块
+                if ($(window).width() > 1366 && !resizeChanged){
+                    resizeChanged = true;
+                    $('.customlink-checkbox').attr('style', 'display: inline-block;');
+                    $('.expires-checkbox').attr('style','display: inline-block');
+                    if (use_custom_link){
+                        $('.customlink-input').attr('style', 'display: inline-block;');
+                    }
+                    if (use_link_expires){
+                        $('.expires-container').attr('style','display: inline-block');
+                    }
+                } else {
+                    resizeChanged = false;
+                }
             });
         });
     </script>

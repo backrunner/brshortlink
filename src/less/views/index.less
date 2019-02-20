@@ -1,9 +1,13 @@
+label{
+    width: max-content;
+}
 .index-container{
     padding-top: 11% !important;
 }
 .customlink-checkbox{
     display: inline-block;
     padding-top: 8px;
+    padding-right: 20px;
 }
 .customlink-input{
     display: none;
@@ -11,7 +15,9 @@
 .expires-checkbox{
     display: inline-block;
     padding-top: 8px;
-    padding-left: 20px !important;
+}
+.expires-checkbox label::after{
+    padding-left: 2px !important;
 }
 .expires-container{
     display: none;
@@ -37,6 +43,37 @@
 #link-card-body a{
     -webkit-user-drag: auto;
 }
+.radio-localsite{
+    padding-right: 18px;
+}
+@media (max-width: 1366px){
+    .expires-checkbox{
+        display: block !important;
+    }
+    #btn-generate{
+        font-size: 15px;
+        margin-top:12px;
+    }
+    .expires-container{
+        padding: 12px 0 !important;
+        max-width: 100%;
+    }
+    .customlink-input{
+        padding: 12px 0 !important;
+        max-width: 100%;
+    }
+    .expires-checkbox label::after{
+        padding-left: 3px !important;
+    }
+}
+@media (max-width: 1024px){
+    .index-container{
+        padding-top: 10% !important;
+    }
+    label{
+        font-size: 15px;
+    }
+}
 @media (max-width: 576px){
     .link-form{
         padding-top:12px;
@@ -44,13 +81,18 @@
     .index-container{
         padding: 12% 7% !important;
     }
-    .customlink-input{
-        padding: 12px 0 !important;
-    }
     .expires-checkbox{
         padding-left: 4px !important;
     }
-    .expires-container{
-        padding: 12px 0 !important;
+    .customlink-checkbox{
+        padding-right: 12px;
+    }
+    .radio-localsite{
+        padding-right: 12px;
+    }
+}
+@media(max-width: 320px){
+    #btn-generate{
+        margin-top:0px;
     }
 }
