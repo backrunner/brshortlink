@@ -75,5 +75,13 @@ gulp.task('clean', async() => {
     await del('public/**/*');
 });
 
+gulp.task('watch',function(){
+    gulp.watch('src/less/**/*.less',gulp.series('less'));
+    gulp.watch('src/views/**/*', gulp.series('views'));
+    gulp.watch('src/static/**/*', gulp.series('requirements'));
+    gulp.watch('node_modules/**/*', gulp.series('requirements'));
+    gulp.watch('bower_components/**/*',gulp.series('requirements'));
+});
+
 gulp.task('build', gulp.parallel('requirements','views','less'));
 gulp.task('clean-build', gulp.series('clean', gulp.parallel('requirements','views','less')));
