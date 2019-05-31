@@ -1,0 +1,40 @@
+.container-menu{
+    width: @menu-width;
+    height: 100%;
+    position: fixed;
+    min-height: 100%;
+    top:0;
+    left:0;
+    bottom:0;
+    z-index: 30;
+    box-shadow:0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
+.menu-header{
+    background: @color-header-bg;
+    height: @header-height;
+}
+.menu-title{
+    margin-left: 28px;
+    padding-top: @header-height - 52px;
+}
+.menu-title span{
+    color: #fff;
+    font-size:22px;
+    letter-spacing: 2px;
+}
+.menu{
+    margin: 0;
+    padding: 0;
+}
+.menu li{
+    padding-left: 28px;
+    height: @menu-item-height;
+    line-height: @menu-item-height;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: #2e2e2e;
+}
+.menu li>span{
+    position: absolute;
+    left: 60px;
+}

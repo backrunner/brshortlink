@@ -44,13 +44,18 @@ gulp.task('requirements', async() => {
     //bootstrap
     gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
         .pipe(gulp.dest('public/static'));
+    //canvas_nest
+    gulp.src('node_modules/canvas-nest.js/dist/canvas-nest.js')
+        .pipe(gulp.dest('public/static'));
     await gulp.src('bower_components/bootstrap/dist/js/bootstrap.min.js')
         .pipe(gulp.dest('public/static'));
 });
 
 gulp.task('less',async()=>{
-    await gulp.src('src/less/main.less').pipe(less()).pipe(cssmin()).pipe(rename('main.min.css'))
-    .pipe(gulp.dest('public/static'));
+    gulp.src('src/less/main.less').pipe(less()).pipe(cssmin()).pipe(rename('main.min.css'))
+        .pipe(gulp.dest('public/static'));
+    await gulp.src('src/less/views/admin/main.less').pipe(less()).pipe(cssmin()).pipe(rename('admin.min.css'))
+        .pipe(gulp.dest('public/static'));
 });
 
 gulp.task('views', async() => {

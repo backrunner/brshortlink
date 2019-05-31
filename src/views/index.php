@@ -2,6 +2,7 @@
 if (file_exists('./install.lock')){
     include_once('./config.php');
     include_once('./function.php');
+    include_once('./sqlconn.php');
 
     if ($mysqli->connect_errno){
         $error_code = 100;  //无法连接到数据库

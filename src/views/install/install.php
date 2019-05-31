@@ -11,6 +11,12 @@
             return;
         }
         $mysqli->query("set names 'utf8';");
+        //启动事务
+        $res_event = $mysqli->query("begin;");
+        if (!$res_event){
+            echo json_encode(array('type'=>'error','msg'=>'启动事务时发生错误:'.$res_event->error));
+            return;
+        }
         $create_query = "CREATE TABLE `shortlinks` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `url` varchar(4096) NOT NULL,
@@ -62,38 +68,47 @@
         $res_query = $mysqli->query($create_query);
         if (!$res_query){
             echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query->error));
+            $mysqli->query('rollback;');
             return;
         }
         $res_query_custom = $mysqli->query($create_query_custom);
         if (!$res_query_custom){
             echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query_custom->error));
+            $mysqli->query('rollback;');
             return;
         }
         $res_query_log = $mysqli->query($create_query_log);
         if (!$res_query_log){
             echo json_encode(array('type'=>'error','msg'=>'创建日志表时发生错误:'.$res_query_log->error));
+            $mysqli->query('rollback;');
             return;
         }
         $res_query_custom_log = $mysqli->query($create_query_custom_log);
         if (!$res_query_custom_log){
             echo json_encode(array('type'=>'error','msg'=>'创建自定义链接日志表时发生错误:'.$res_query_custom_log->error));
+            $mysqli->query('rollback;');
             return;
         }
         $res_query_user = $mysqli->query($create_query_user);
         if (!$res_query_user){
             echo json_encode(array('type'=>'error','msg'=>'创建用户表时发生错误:'.$res_query_user->error));
+            $mysqli->query('rollback;');
             return;
         }
         $res_query_userlog = $mysqli->query($create_query_userlog);
         if (!$res_query_userlog){
             echo json_encode(array('type'=>'error','msg'=>'创建用户日志表时发生错误:'.$res_query_userlog->error));
+            $mysqli->query('rollback;');
             return;
         }
         $res_query_manager = $mysqli->query($create_query_manager);
         if (!$res_query_manager){
             echo json_encode(array('type'=>'error','msg'=>'创建管理员时发生错误:'.$res_query_manager->error));
+            $mysqli->query('rollback;');
             return;
         }
+        //提交事务
+        $mysqli->query('commit;');
         $mysqli->close();
         try{
             $config = str_replace("\t","","<?php

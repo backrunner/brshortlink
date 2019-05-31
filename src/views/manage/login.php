@@ -58,40 +58,60 @@
         </div>
     </div>
     <script>
+        //键盘事件绑定
+        $('#i-username').keydown(function(e){
+            if (e.keyCode == 13){
+                checkForm();
+            }
+        });
+        $('#i-password').keydown(function(e){
+            if (e.keyCode == 13){
+                checkForm();
+            }
+        });
+
         function checkForm(){
             var username = $("#i-username").val();
             var password = $("#i-password").val();
 
             var isFormChecked = true;
 
+            var username_fail = false;
+            var password_fail = false;
+
             if (username.length < 1){
                 $('#i-username').addClass('is-invalid');
                 toastr.error('请输入用户名。');
                 isFormChecked = false;
+                username_fail = true;
             }
             if (password.length < 1){
                 $('#i-password').addClass('is-invalid');
                 toastr.error('请输入密码。');
                 isFormChecked = false;
+                password_fail = true;
             }
 
             //特殊字符检测
-            var strReg = '^[A-Za-z0-9\u4e00-\u9fa5]+$';
+            var strReg = '^([A-Za-z0-9!@#._])+$';
             var re = new RegExp(strReg);
-            var res = re.exec(username);
 
-            if (res != username || res == null){
-                isFormChecked = false;
-                $('#i-username').addClass('is-invalid');
-                toastr.error("用户名中不能包含特殊字符。");
+            if (!username_fail){
+                var res = re.exec(username);
+                if (res == null){
+                    isFormChecked = false;
+                    $('#i-username').addClass('is-invalid');
+                    toastr.error("用户名不允许包含中文、特殊字符。");
+                }
             }
 
-            res = re.exec(password);
-
-            if (res != password || res == null){
-                isFormChecked = false;
-                $('#i-password').addClass('is-invalid');
-                toastr.error("密码中不能包含特殊字符。");
+            if (!password_fail){
+                res = re.exec(password);
+                if (res == null){
+                    isFormChecked = false;
+                    $('#i-password').addClass('is-invalid');
+                    toastr.error("密码不允许包含中文、特殊字符。");
+                }
             }
 
             if (isFormChecked){
@@ -100,7 +120,29 @@
         }
 
         function submitLogin(username, password){
-
+            $.ajax({
+                type: 'POST',
+                url: 'action.php',
+                data: {
+                    action:'login',
+                    username: username,
+                    password: CryptoJS.SHA256(password).toString()
+                },
+                dataType:'json',
+                success: function(data){
+                    if (data.code == 200){
+                        window.location.reload();
+                    } else {
+                        toastr.error(data.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                }
+            });
         }
     </script>
+    <?php if (!is_mobile_request()){ ?>
+        <script color="28,28,28" opacity='0.7' zIndex="-2" count="120" src="../static/canvas-nest.js"></script>
+    <?php } ?>
 </body>

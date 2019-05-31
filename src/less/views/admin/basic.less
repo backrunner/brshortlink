@@ -1,0 +1,46 @@
+.no-select{
+    user-select: none;
+    -moz-user-select: none;
+    -ms-touch-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.no-drag{
+    -webkit-user-drag: none;
+}
+
+.no-select-drag{
+    .no-select();
+    .no-drag();
+}
+
+html{
+    height: 100%;
+}
+
+body{
+    height: 100%;
+    font-family: DengXian, Microsoft YaHei, Arial, Helvetica, sans-serif;
+}
+
+div{
+    .no-select-drag();
+}
+
+h1, h2, h3, h4, h5 {
+    letter-spacing: 3px;
+    .no-select-drag();
+}
+
+h3{
+    font-size: 24px;
+}
+
+h4{
+    font-size: 20px;
+}
+
+li{
+    list-style: none;
+}

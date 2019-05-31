@@ -72,7 +72,7 @@
                 <div class="col-sm-4 expires-container">
                     <div class="form-group">
                         <div class="input-group date" id="expires-timepicker" data-target-input="nearest">
-                            <input type="text" id="i-expires" class="form-control datetimepicker-input" data-target="#expires-timepicker"/>
+                            <input type="text" id="i-expires" class="form-control datetimepicker-input" data-target="#expires-timepicker" />
                             <div class="input-group-append" data-target="#expires-timepicker" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -102,117 +102,124 @@
         var use_custom_link = false;
         var use_link_expires = false;
 
-        $(document).ready(function () {
-            //初始化
-            if (api == null){
-                api = 0;
-                $('#r-localsite').prop("checked",true);
-            } else if (api == "0"){
-                api = 0;
-                $('#r-localsite').prop("checked",true);
-                if ($('#cb_customlink').attr('disabled') != undefined){
-                    $('#cb_customlink').removeAttr('disabled');
-                }
-                if ($('#i-customlink').attr('disabled') != undefined){
-                    $('#i-customlink').removeAttr('disabled');
-                }
-                if ($('#cb_expires').attr('disabled') != undefined){
-                    $('#cb_expires').removeAttr('disabled');
-                }
-                if ($('#i-expires').attr('disabled') != undefined){
-                    $('#i-expires').removeAttr('disabled');
-                }
-            } else if (api == "1"){
-                api = 1;
-                $('#r-sinaapp').prop("checked",true);
-                $('#cb_customlink').attr('disabled','disabled');
-                $('#i-customlink').attr('disabled','disabled');
-                $('#cb_expires').attr('disabled','disabled');
-                $('#i-expires').attr('disabled','disabled');
+        //初始化
+        $('#cb_customlink').prop('checked', false);
+        $('#cb_expires').prop('checked', false);
+
+        if (api == null) {
+            api = 0;
+            $('#r-localsite').prop("checked", true);
+        } else if (api == "0") {
+            api = 0;
+            $('#r-localsite').prop("checked", true);
+            if ($('#cb_customlink').attr('disabled') != undefined) {
+                $('#cb_customlink').removeAttr('disabled');
             }
+            if ($('#i-customlink').attr('disabled') != undefined) {
+                $('#i-customlink').removeAttr('disabled');
+            }
+            if ($('#cb_expires').attr('disabled') != undefined) {
+                $('#cb_expires').removeAttr('disabled');
+            }
+            if ($('#i-expires').attr('disabled') != undefined) {
+                $('#i-expires').removeAttr('disabled');
+            }
+        } else if (api == "1") {
+            api = 1;
+            $('#r-sinaapp').prop("checked", true);
+            $('#cb_customlink').attr('disabled', 'disabled');
+            $('#i-customlink').attr('disabled', 'disabled');
+            $('#cb_expires').attr('disabled', 'disabled');
+            $('#i-expires').attr('disabled', 'disabled');
+        }
 
-            //绑定事件
-            $('#cb_customlink').change(function(){
-                use_custom_link = !use_custom_link;
-                if ($('.customlink-input').attr('style') != undefined){
-                    if ($(window).width() < 1366){
-                        $('.customlink-checkbox').removeAttr('style');
-                    }
-                    $('.customlink-input').removeAttr('style');
+        //绑定事件
+        $('#cb_customlink').change(function () {
+            use_custom_link = !use_custom_link;
+            if ($('.customlink-input').attr('style') != undefined) {
+                if ($(window).width() < 1366) {
+                    $('.customlink-checkbox').removeAttr('style');
+                }
+                $('.customlink-input').removeAttr('style');
+            } else {
+                if ($(window).width() >= 1366) {
+                    $('.customlink-input').attr('style', 'display: inline-block;');
                 } else {
-                    if ($(window).width()>=1366){
-                        $('.customlink-input').attr('style', 'display: inline-block;');
-                    } else {
-                        $('.customlink-checkbox').attr('style','display: block');
-                        $('.customlink-input').attr('style', 'display: block;');
-                    }
+                    $('.customlink-checkbox').attr('style', 'display: block');
+                    $('.customlink-input').attr('style', 'display: block;');
                 }
-            });
+            }
+        });
 
-            $('#cb_expires').change(function(){
-                use_link_expires = !use_link_expires;
-                if ($('.expires-container').attr('style') != undefined){
-                    if ($(window).width() < 1366){
-                        $('.expires-checkbox').removeAttr('style');
-                    }
-                    $('.expires-container').removeAttr('style');
+        $('#cb_expires').change(function () {
+            use_link_expires = !use_link_expires;
+            if ($('.expires-container').attr('style') != undefined) {
+                if ($(window).width() < 1366) {
+                    $('.expires-checkbox').removeAttr('style');
+                }
+                $('.expires-container').removeAttr('style');
+            } else {
+                if ($(window).width() >= 1366) {
+                    $('.expires-container').attr('style', 'display: inline-block;');
                 } else {
-                    if ($(window).width()>=1366){
-                        $('.expires-container').attr('style', 'display: inline-block;');
-                    } else {
-                        $('.expires-checkbox').attr('style','display: block');
-                        $('.expires-container').attr('style', 'display: block;');
-                    }
+                    $('.expires-checkbox').attr('style', 'display: block');
+                    $('.expires-container').attr('style', 'display: block;');
                 }
-            });
-            $('#r-localsite').click(function(){
-                api = 0;
-                setCookie('api-choice', api, 30);
-                if ($('#cb_customlink').attr('disabled') != undefined){
-                    $('#cb_customlink').removeAttr('disabled');
-                }
-                if ($('#i-customlink').attr('disabled') != undefined){
-                    $('#i-customlink').removeAttr('disabled');
-                }
-                if ($('#cb_expires').attr('disabled') != undefined){
-                    $('#cb_expires').removeAttr('disabled');
-                }
-                if ($('#i-expires').attr('disabled') != undefined){
-                    $('#i-expires').removeAttr('disabled');
-                }
-            });
-            $('#r-sinaapp').click(function(){
-                api = 1;
-                setCookie('api-choice', api, 30);
-                $('#cb_customlink').attr('disabled','disabled');
-                $('#i-customlink').attr('disabled','disabled');
-                $('#cb_expires').attr('disabled','disabled');
-                $('#i-expires').attr('disabled','disabled');
-            });
+            }
+        });
+        $('#r-localsite').click(function () {
+            api = 0;
+            setCookie('api-choice', api, 30);
+            if ($('#cb_customlink').attr('disabled') != undefined) {
+                $('#cb_customlink').removeAttr('disabled');
+            }
+            if ($('#i-customlink').attr('disabled') != undefined) {
+                $('#i-customlink').removeAttr('disabled');
+            }
+            if ($('#cb_expires').attr('disabled') != undefined) {
+                $('#cb_expires').removeAttr('disabled');
+            }
+            if ($('#i-expires').attr('disabled') != undefined) {
+                $('#i-expires').removeAttr('disabled');
+            }
+        });
+        $('#r-sinaapp').click(function () {
+            api = 1;
+            setCookie('api-choice', api, 30);
+            $('#cb_customlink').attr('disabled', 'disabled');
+            $('#i-customlink').attr('disabled', 'disabled');
+            $('#cb_expires').attr('disabled', 'disabled');
+            $('#i-expires').attr('disabled', 'disabled');
+        });
 
-            $('#expires-timepicker').datetimepicker({
-                minDate: moment().startOf('minute')
-            });
+        $('#expires-timepicker').datetimepicker({
+            minDate: moment().startOf('minute')
+        });
 
-            var resizeChanged = false;
+        var resizeChanged = false;
 
-            $(window).resize(function(){
-                //执行代码块
-                if ($(window).width() > 1366 && !resizeChanged){
-                    resizeChanged = true;
-                    $('.customlink-checkbox').attr('style', 'display: inline-block;');
-                    $('.expires-checkbox').attr('style','display: inline-block');
-                    if (use_custom_link){
-                        $('.customlink-input').attr('style', 'display: inline-block;');
-                    }
-                    if (use_link_expires){
-                        $('.expires-container').attr('style','display: inline-block');
-                    }
-                } else {
-                    resizeChanged = false;
+        $(window).resize(function () {
+            //执行代码块
+            if ($(window).width() > 1366 && !resizeChanged) {
+                resizeChanged = true;
+                $('.customlink-checkbox').attr('style', 'display: inline-block;');
+                $('.expires-checkbox').attr('style', 'display: inline-block');
+                if (use_custom_link) {
+                    $('.customlink-input').attr('style', 'display: inline-block;');
                 }
-            });
+                if (use_link_expires) {
+                    $('.expires-container').attr('style', 'display: inline-block');
+                }
+            } else {
+                resizeChanged = false;
+            }
         });
     </script>
+
+    <!-- animation -->
+    <?php if (!is_mobile_request()){ ?>
+    <script color="28,28,28" opacity='0.7' zIndex="-2" count="120" src="static/canvas-nest.js"></script>
+    <?php } ?>
 </body>
+
 </html>
