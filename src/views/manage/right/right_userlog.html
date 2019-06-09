@@ -1,0 +1,56 @@
+<div class="content-container container-userlog" id="container-userlog">
+    <div class="row">
+        <div class="col-lg-12 header">
+            <h2>登录日志</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="table-userlog"></table>
+        </div>
+    </div>
+    <script>
+        $('.model-title span').text('登录日志');
+
+        $('#table-userlog').bootstrapTable({
+            url: '/manage/data.php',
+            method: 'POST',
+            contentType: "application/x-www-form-urlencoded",
+            cache: false,
+            pageSize: 15,
+            queryParams: generateQueryParams,
+            pagination: true,
+            sidePagination: "server",
+            escape: true,
+            locale: 'zh-CN',
+            columns: [{
+                field: 'id',
+                title: 'ID'
+            }, {
+                field: 'userid',
+                title: '用户 ID'
+            }, {
+                field: 'username',
+                title: '用户名'
+            }, {
+                field: 'logintime',
+                title: '登录时间',
+                formatter: (value, row, index) => {
+                    return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');;
+                }
+            }, {
+                field: 'loginip',
+                title: 'IP'
+            }]
+        });
+
+        function generateQueryParams(params){
+            var p = {
+                limit: params.limit,
+                offset: params.offset,
+                type: 'userlog'
+            }
+            return p;
+        }
+    </script>
+</div>

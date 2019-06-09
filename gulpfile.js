@@ -46,6 +46,17 @@ gulp.task('requirements', async() => {
         .pipe(gulp.dest('public/static'));
     gulp.src('bower_components/bootstrap/dist/css/bootswatch-materia.min.css')
         .pipe(gulp.dest('public/static'));
+    //popper.js
+    gulp.src('bower_components/popper.js/dist/umd/popper.min.js')
+        .pipe(gulp.dest('public/static'));
+    //moment.js
+    gulp.src('bower_components/moment/moment.js').pipe(concat('bower_components/moment/locale/zh-cn.js'))
+        .pipe(uglify()).pipe(rename('moment.min.js')).pipe(gulp.dest('public/static'));
+    //bootstrap_table
+    gulp.src(['bower_components/bootstrap-table/dist/bootstrap-table.min.js','bower_components/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js']).pipe(concat('bootstrap-table.min.js'))
+        .pipe(gulp.dest('public/static'));
+    gulp.src('bower_components/bootstrap-table/dist/bootstrap-table.min.css')
+        .pipe(gulp.dest('public/static'));
     //canvas_nest
     gulp.src('node_modules/canvas-nest.js/dist/canvas-nest.js')
         .pipe(gulp.dest('public/static'));

@@ -1,4 +1,26 @@
 <?php
+function getIP()
+{
+    static $realip;
+    if (isset($_SERVER)){
+        if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
+            $realip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+        } else if (isset($_SERVER["HTTP_CLIENT_IP"])) {
+            $realip = $_SERVER["HTTP_CLIENT_IP"];
+        } else {
+            $realip = $_SERVER["REMOTE_ADDR"];
+        }
+    } else {
+        if (getenv("HTTP_X_FORWARDED_FOR")){
+            $realip = getenv("HTTP_X_FORWARDED_FOR");
+        } else if (getenv("HTTP_CLIENT_IP")) {
+            $realip = getenv("HTTP_CLIENT_IP");
+        } else {
+            $realip = getenv("REMOTE_ADDR");
+        }
+    }
+    return $realip;
+}
 if (file_exists('../install.lock')) {
     session_start();
     include_once '../config.php';
@@ -22,9 +44,9 @@ if (file_exists('../install.lock')) {
                 //安全过滤
                 $u = fn_safe($_POST['username']);
                 //从数据库查询密码
-                $query_login = $mysqli->prepare('SELECT password FROM managers WHERE username=?;');
+                $query_login = $mysqli->prepare('SELECT id,password FROM managers WHERE username=?;');
                 $query_login->bind_param('s', $u);
-                $query_login->bind_result($pwd);
+                $query_login->bind_result($userid, $pwd);
                 $query_login->execute();
                 if (!$query_login) {
                     echo json_encode(array('type' => 'error', 'code' => 400, 'error' => '查询执行错误。'));
@@ -39,6 +61,15 @@ if (file_exists('../install.lock')) {
                         $_SESSION['admin'] = true;
                         $_SESSION['username'] = $u;
                         echo json_encode(array('type' => 'success', 'code' => 200, 'message' => '登录成功。'));
+                        //执行记录
+                        $query_loginlog = $mysqli->prepare('insert into managers_log (userid, logintime, loginip) values (?,?,?)');
+                        //获取信息
+                        $time = time();
+                        $ip = getIP();
+                        //参数绑定
+                        $query_loginlog->bind_param('iis', $userid, $time, $ip);
+                        $query_loginlog->execute();
+                        $query_loginlog->close();
                     } else {
                         echo json_encode(array('type' => 'error', 'code' => 401, 'error' => '用户名或密码错误。'));
                     }
