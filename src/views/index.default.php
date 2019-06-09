@@ -13,7 +13,6 @@
     <link rel="stylesheet" type="text/css" href="static/toastr.min.css" />
     <link rel="stylesheet" type="text/css" href="static/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="static/animate.min.css" />
-    <link rel="stylesheet" type="text/css" href="static/awesome-bootstrap-checkbox.css" />
     <link rel="stylesheet" type="text/css" href="static/tempusdominus.min.css" />
     <script src="static/jquery.min.js"></script>
     <script src="static/bootstrap.min.js"></script>
@@ -39,33 +38,33 @@
                 <div class="form-group link-form">
                     <label style="display:inline-block">URL</label>
                     <div class="link-apichoice">
-                        <div class="abc-radio abc-radio-primary link-apiradio radio-localsite">
-                            <input type="radio" id="r-localsite" name="r-api">
-                            <label for="r-localsite">
+                        <div class="custom-control custom-radio link-apiradio radio-localsite">
+                            <input type="radio" class="custom-control-input" id="r-localsite" name="r-api">
+                            <label class="custom-control-label" for="r-localsite">
                                 <?php echo $_SERVER['HTTP_HOST'];?>
                             </label>
                         </div>
-                        <div class="abc-radio abc-radio-primary link-apiradio">
-                            <input type="radio" id="r-sinaapp" name="r-api">
-                            <label for="r-sinaapp">
+                        <div class="custom-control custom-radio link-apiradio">
+                            <input type="radio" class="custom-control-input" id="r-sinaapp" name="r-api">
+                            <label class="custom-control-label" for="r-sinaapp">
                                 t.cn
                             </label>
                         </div>
                     </div>
                     <input type="text" class="form-control" id="i-link">
                 </div>
-                <div class="abc-checkbox abc-checkbox-primary customlink-checkbox">
-                    <input type="checkbox" id="cb_customlink">
-                    <label for="cb_customlink">
+                <div class="custom-control custom-checkbox customlink-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="cb_customlink">
+                    <label class="custom-control-label" for="cb_customlink">
                         自定义短链接
                     </label>
                 </div>
                 <div class="col-sm-4 customlink-input">
                     <input type="text" id="i-customlink" class="form-control">
                 </div>
-                <div class="abc-checkbox abc-checkbox-primary expires-checkbox">
-                    <input type="checkbox" id="cb_expires">
-                    <label for="cb_expires">
+                <div class="custom-control custom-checkbox expires-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="cb_expires">
+                    <label class="custom-control-label" for="cb_expires">
                         过期时间
                     </label>
                 </div>

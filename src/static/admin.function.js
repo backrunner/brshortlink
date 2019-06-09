@@ -12,6 +12,12 @@ function setCookie(name, value, day) {
     document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
 }
 
+function setCookie_seconds(name, value, seconds) {
+    var exp = new Date();
+    exp.setTime(exp.getTime() + seconds * 1000);
+    document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+}
+
 function setCookie_raw(name, value, day) {
     var Days = day;
     var exp = new Date();

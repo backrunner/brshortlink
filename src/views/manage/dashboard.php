@@ -145,7 +145,14 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.code == 200) {
-                            window.location.reload();
+                            var c = getCookie('autologin');
+                            if (c != null){
+                                c = c.split('|');
+                                setCookie('autologin','',-1);
+                                setCookie_seconds('autologin_checked','true',300);
+                                setCookie_seconds('autologin_username',c[0],300);
+                            }
+                            window.location.href="/manage/";
                         } else {
                             toastr.error(data.error);
                         }

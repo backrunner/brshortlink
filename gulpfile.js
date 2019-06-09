@@ -21,8 +21,6 @@ gulp.task('requirements', async() => {
         .pipe(gulp.dest('public/static'));
     gulp.src('src/static/font-awesome-4.7.0/fonts/*')
         .pipe(gulp.dest('public/static/fonts'));
-    gulp.src('node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css').pipe(cssmin())
-        .pipe(gulp.dest('public/static'));
     //animate.css
     gulp.src('node_modules/animate.css/animate.min.css')
         .pipe(gulp.dest('public/static'));
@@ -49,9 +47,6 @@ gulp.task('requirements', async() => {
     //popper.js
     gulp.src('bower_components/popper.js/dist/umd/popper.min.js')
         .pipe(gulp.dest('public/static'));
-    //moment.js
-    gulp.src('bower_components/moment/moment.js').pipe(concat('bower_components/moment/locale/zh-cn.js'))
-        .pipe(uglify()).pipe(rename('moment.min.js')).pipe(gulp.dest('public/static'));
     //bootstrap_table
     gulp.src(['bower_components/bootstrap-table/dist/bootstrap-table.min.js','bower_components/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js']).pipe(concat('bootstrap-table.min.js'))
         .pipe(gulp.dest('public/static'));
