@@ -11,6 +11,14 @@ if (file_exists('../install.lock')) {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'login':
+                //参数检查
+                if (!isset($_POST['username'])){
+                    echo json_encode(array('type' => 'error', 'code' => 300, 'error' => '请提交完整的参数。'));
+                    return;
+                }
+                if (!isset($_POST['password'])){
+                    echo json_encode(array('type' => 'error', 'code' => 300, 'error' => '请提交完整的参数。'));
+                }
                 //安全过滤
                 $u = fn_safe($_POST['username']);
                 //从数据库查询密码
@@ -37,6 +45,22 @@ if (file_exists('../install.lock')) {
                 } else {
                     $query_login->close();
                     echo json_encode(array('type' => 'error', 'code' => 401, 'error' => '用户名或密码错误。'));
+                }
+                break;
+            case 'logout':
+                if (!isset($_SESSION['admin']) || !$_SESSION['admin']){
+                    echo json_encode(array('type' => 'error', 'code' => 101, 'error' => '权限错误。'));
+                    return;
+                }
+                if (!isset($_POST['username'])){
+                    echo json_encode(array('type' => 'error', 'code' => 300, 'error' => '请提交完整的参数。'));
+                    return;
+                }
+                if ($_POST['username'] == $_SESSION['username']){
+                    session_destroy();
+                    echo json_encode(array('type' => 'error', 'code' => 200, 'error' => '登出成功。'));
+                } else {
+                    echo json_encode(array('type' => 'error', 'code' => 301, 'error' => '参数错误。'));
                 }
                 break;
             default:

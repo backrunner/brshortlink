@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
-        <?php echo SITE_NAME; ?>
+        登录 - <?php echo SITE_NAME; ?>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="../static/bootstrap.min.css" />
@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../static/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/awesome-bootstrap-checkbox.css" />
     <script src="../static/jquery.min.js"></script>
+    <script src="../static/admin.function.js"></script>
     <script src="../static/bootstrap.min.js"></script>
     <script src="../static/toastr.min.js"></script>
     <script src="../static/crypto-js.js"></script>
@@ -120,20 +121,21 @@
         }
 
         function submitLogin(username, password){
+            let p = CryptoJS.SHA256(password).toString();
             $.ajax({
                 type: 'POST',
                 url: 'action.php',
                 data: {
                     action:'login',
                     username: username,
-                    password: CryptoJS.SHA256(password).toString()
+                    password: p
                 },
                 dataType:'json',
                 success: function(data){
-                    if (data.code == 200){
-                        window.location.reload();
-                    } else {
+                    if (data.code != 200){
                         toastr.error(data.error);
+                    } else {
+                        window.location.href="/manage/?p=data";
                     }
                 },
                 error: function(err){

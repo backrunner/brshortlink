@@ -27,14 +27,71 @@
     padding: 0;
 }
 .menu li{
-    padding-left: 28px;
     height: @menu-item-height;
     line-height: @menu-item-height;
     font-size: 14px;
     letter-spacing: 0.05em;
-    color: #2e2e2e;
+    color: #878787;
+}
+.menu li>i{
+    padding-left: 28px;
+}
+.menu li:hover{
+    cursor: pointer;
+}
+.menu li:hover i, .menu li:hover a, .menu li:hover span{
+    color:#1faeff;
+    transition: all 0.1s;
+}
+.menu-item-expanded{
+    height: auto !important;
+}
+.menu-item-selected{
+    background: #fbfbfb;
+}
+.menu-item-selected>.menu-sideline{
+    display: block;
+}
+.menu-item-selected i{
+    color:#1faeff;
+}
+.menu-item-selected span{
+    color:#1faeff;
 }
 .menu li>span{
     position: absolute;
     left: 60px;
+}
+.menu-sideline{
+    height: @menu-item-height;
+    position: absolute;
+    left:0;
+    border-left: 3px #85d2ff solid;
+    display: none;
+}
+.treeview{
+    display: none;
+}
+.treeview dd{
+    font-size: 13px;
+    line-height: 32px;
+    margin-bottom: 0;
+    padding-left: 60px;
+}
+.treeview dd{
+    cursor: pointer;
+}
+.treeview dd:hover{
+    color: #1faeff;
+}
+.treeview-item-selected{
+    color: #1faeff;
+}
+.treeview-active{
+    display: block;
+}
+.treeview-toggle{
+    transition: none;
+    position: absolute;
+    right: 1.5em;
 }

@@ -1,0 +1,74 @@
+<div class="content-container container-data" id="container-data">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-header">总链接数</div>
+                <div class="card-body">
+                    <span id="t-totalLinkCount">获取中...</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-header">总点击次数</div>
+                <div class="card-body">
+                    <span id="t-totalClick">获取中...</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-header">站点访问量</div>
+                <div class="card-body">
+                    <span id="t-totalAccess">获取中...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function initData() {
+        //总链接数
+        $.ajax({
+            url: '/manage/data.php',
+            type: 'POST',
+            data: {
+                type: 'totalLinkCount'
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (res.code == 200) {
+                    $('#t-totalLinkCount').text(res.data);
+                } else {
+                    $('#t-totalLinkCount').text('Error');
+                }
+            },
+            error: function (e) {
+                console.error(e);
+                $('#t-totalLinkCount').text('Error');
+            }
+        });
+        //总点击数
+        $.ajax({
+            url: '/manage/data.php',
+            type: 'POST',
+            data: {
+                type: 'totalClick'
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (res.code == 200) {
+                    $('#t-totalClick').text(res.data);
+                } else {
+                    $('#t-totalClick').text('Error');
+                }
+            },
+            error: function (e) {
+                console.error(e);
+                $('#t-totalClick').text('Error');
+            }
+        });
+    }
+
+    initData();
+</script>

@@ -44,8 +44,13 @@ gulp.task('requirements', async() => {
     //bootstrap
     gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
         .pipe(gulp.dest('public/static'));
+    gulp.src('bower_components/bootstrap/dist/css/bootswatch-materia.min.css')
+        .pipe(gulp.dest('public/static'));
     //canvas_nest
     gulp.src('node_modules/canvas-nest.js/dist/canvas-nest.js')
+        .pipe(gulp.dest('public/static'));
+    //pjax
+    gulp.src('node_modules/jquery-pjax/jquery.pjax.js')
         .pipe(gulp.dest('public/static'));
     await gulp.src('bower_components/bootstrap/dist/js/bootstrap.min.js')
         .pipe(gulp.dest('public/static'));
