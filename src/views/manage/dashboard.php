@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../static/bootswatch-materia.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/admin.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/toastr.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/nprogress.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/bootstrap-table.min.css" />
     <script src="../static/jquery.min.js"></script>
@@ -20,6 +21,7 @@
     <script src="../static/bootstrap.min.js"></script>
     <script src="../static/toastr.min.js"></script>
     <script src="../static/moment.min.js"></script>
+    <script src="../static/nprogress.min.js"></script>
     <script src="../static/bootstrap-table.min.js"></script>
 </head>
 
@@ -39,8 +41,8 @@
                     <a class="menu-sideline"></a><i class="fa fa-external-link"></i><span>短链接</span>
                     <a class="treeview-toggle"><i class="fa fa-caret-left"></i></a>
                     <dl class="treeview">
-                        <dd data-item="shortlink">短链接管理</dd>
-                        <dd>访问日志</dd>
+                        <dd data-item="shortlink">普通短链接</dd>
+                        <dd data-item="customlink">自定义短链接</dd>
                     </dl>
                 </li>
                 <li data-submenu="true">
@@ -78,7 +80,7 @@
             <?php
             if (isset($_GET['p'])){
                 switch($_GET['p']){
-                    case 'user':case 'userlog':case 'data':
+                    case 'user':case 'userlog':case 'shortlink':case 'customlink':case 'site':case 'data':
                         include_once('./right/right_'.$_GET['p'].'.html');
                         break;
                     default:
@@ -180,7 +182,16 @@
                     url:'/manage/?p='+$(this).attr('data-item'),
                     container:'#container-right',
                     fragment: '#container-right'
-                })
+                });
+            });
+
+            $(document).on('pjax:start', function() { NProgress.start(); });
+            $(document).on('pjax:end',   function() {
+                NProgress.done();
+                var nav = document.getElementById('navbarResponsive');
+                if (nav != undefined){
+                    nav.setAttribute('class','navbar-collapse collapse');
+                }
             });
         </script>
     </div>

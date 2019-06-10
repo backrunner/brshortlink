@@ -39,6 +39,11 @@ gulp.task('requirements', async() => {
         .pipe(cssmin())
         .pipe(rename('tempusdominus.min.css'))
         .pipe(gulp.dest('public/static'));
+    //nprogress
+    gulp.src('node_modules/nprogress/nprogress.js').pipe(uglify()).pipe(rename("nprogress.min.js"))
+        .pipe(gulp.dest('public/static'));
+    gulp.src('node_modules/nprogress/nprogress.css').pipe(cssmin()).pipe(rename("nprogress.min.css"))
+        .pipe(gulp.dest('public/static'));
     //bootstrap
     gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
         .pipe(gulp.dest('public/static'));

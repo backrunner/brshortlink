@@ -1,13 +1,155 @@
-<div class="content-container container-user" id="container-user">
+<div class="content-container container-user" id="container-user" style="margin: 12px 48px;">
     <div class="row">
-        <div class="col-lg-12 header">
-            <h2>用户列表</h2>
+        <div class="col-md-12">
+            <div id="table-user-toolbar">
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal-adduser" onclick="initModal();"><i class="fa fa-plus" aria-hidden="true"></i><span style="margin-left:8px;">添加用户</span></button>
+                <button class="btn btn-sm btn-secondary" style="float: right;"><i class="fa fa-refresh" aria-hidden="true"></i><span style="margin-left:8px;" onclick="refreshTable();">刷新列表</span></button>
+            </div>
+            <table id="table-user"></table>
         </div>
-    </div>
-    <div class="row">
-
     </div>
     <script>
         $('.model-title span').text('用户管理');
+
+        $('#table-user').bootstrapTable({
+            url: '/manage/data.php',
+            method: 'POST',
+            contentType: "application/x-www-form-urlencoded",
+            cache: false,
+            pageSize: 15,
+            pageList: [],
+            queryParams: generateQueryParams,
+            pagination: true,
+            sidePagination: "server",
+            escape: true,
+            locale: 'zh-CN',
+            toolbar: '#table-user-toolbar',
+            columns: [{
+                field: 'id',
+                title: 'ID'
+            }, {
+                field: 'username',
+                title: '用户名'
+            }, {
+                field: 'ctime',
+                title: '创建时间',
+                formatter: (value, row, index) => {
+                    return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');;
+                }
+            }, {
+                field: 'id',
+                title: '操作',
+                formatter: (value, row, index) => {
+                    if (value > 1) {
+                        return '<button class="btn btn-sm btn-primary onclick="editUser(' + value + ')"><i class="fa fa-edit" aria-hidden="true"></i></button><button class="btn btn-sm btn-danger" onclick="deleteUser(' + value + ')" style="margin-left:8px;"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+                    }
+                }
+            }]
+        });
+
+        function generateQueryParams(params) {
+            var p = {
+                limit: params.limit,
+                offset: params.offset,
+                type: 'user'
+            }
+            return p;
+        }
+
+        function refreshTable() {
+            $("#table-user").bootstrapTable('refresh');
+        }
     </script>
+
+    <div class="modal" id="modal-adduser">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">添加用户</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="i-username">用户名：</label>
+                        <input type="text" id="i-username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="i-password">密码：</label>
+                        <input type="password" id="i-password" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="checkForm();">提交</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkForm() {
+            var username = $("#i-username").val();
+            var password = $("#i-password").val();
+
+            var isFormChecked = true;
+
+            var username_fail = false;
+            var password_fail = false;
+
+            if (username.length < 1) {
+                $('#i-username').addClass('is-invalid');
+                toastr.error('请输入用户名。');
+                isFormChecked = false;
+                username_fail = true;
+            }
+            if (password.length < 1) {
+                $('#i-password').addClass('is-invalid');
+                toastr.error('请输入密码。');
+                isFormChecked = false;
+                password_fail = true;
+            }
+
+            //特殊字符检测
+            var strReg = '^([A-Za-z0-9!@#._])+$';
+            var re = new RegExp(strReg);
+
+            if (!username_fail) {
+                var res = re.exec(username);
+                if (res == null) {
+                    isFormChecked = false;
+                    $('#i-username').addClass('is-invalid');
+                    toastr.error("用户名不允许包含中文、特殊字符。");
+                }
+            }
+
+            if (!password_fail) {
+                res = re.exec(password);
+                if (res == null) {
+                    isFormChecked = false;
+                    $('#i-password').addClass('is-invalid');
+                    toastr.error("密码不允许包含中文、特殊字符。");
+                }
+            }
+
+            if (isFormChecked) {
+                $('#i-username').removeClass('is-invalid');
+                $('#i-password').removeClass('is-invalid');
+                submitAdduser(username, password);
+            }
+        }
+
+        function submitAdduser(){
+            
+        }
+
+        function initModal(){
+            $('#i-username').removeClass('is-invalid');
+            $('#i-password').removeClass('is-invalid');
+            $('#i-username').removeClass('is-valid');
+            $('#i-password').removeClass('is-valid');
+        }
+    </script>
+</div>
 </div>
