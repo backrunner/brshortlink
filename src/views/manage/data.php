@@ -124,7 +124,7 @@ if (file_exists('../install.lock')) {
                 $query_customlink->execute();
                 $res_customlink = array();
                 while ($query_customlink->fetch()) {
-                    $t = array('id'=>$id,'url'=>$url,'ctime'=>$ctime,'expires'=>$expires,'count'=>$count,'lasttime'=>$lasttime);
+                    $t = array('id'=>$id,'cname'=>$cname,'url'=>$url,'ctime'=>$ctime,'expires'=>$expires,'count'=>$count,'lasttime'=>$lasttime);
                     array_push($res_customlink, $t);
                 }
                 $query_customlink->close();

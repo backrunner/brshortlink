@@ -33,6 +33,16 @@
             `lasttime` int(11) unsigned DEFAULT NULL,
             PRIMARY KEY (`linkid`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+        $create_query_logdetail = "CREATE TABLE `shortlinks_logdetail` (
+            `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
+            `type` int(1) NOT NULL,
+            `linkid` int(11) unsigned NOT NULL,
+            `count` bigint(20) unsigned NOT NULL,
+            `time` int(11) unsigned NOT NULL,
+            `ip` varchar(50) DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            INDEX (`type`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
         $create_query_custom = "CREATE TABLE `shortlinks_custom` (
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `cname` varchar(64) NOT NULL UNIQUE,
@@ -59,12 +69,26 @@
             `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
             `userid` int(11) unsigned NOT NULL,
             `logintime` int(11) unsigned NOT NULL,
-            `loginip` varchar(20) DEFAULT NULL,
+            `loginip` varchar(50) DEFAULT NULL,
             INDEX (`userid`),
             INDEX (`logintime`),
-            INDEX (`loginip`)
+            INDEX (`loginip`),
+            PRIMARY KEY (`id`)
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+        $create_query_access = "CREATE TABLE `access` (
+            `type` varchar(4) unsigned NOT NULL UNIQUE,
+            `count` int(11) unsigned NOT NULL,
+            PRIMARY KEY (`type`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+        $create_query_accesslog = "CREATE TABLE `access_log` (
+            `id` int(11) unsigned NOT NULL UNIQUE AUTO_INCREMENT,
+            `time` int(11) unsigned NOT NULL,
+            `ip` varchar(50) DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            INDEX (`ip`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
         $create_query_manager = 'INSERT INTO `managers` (username, password, ctime) VALUES ("'.$_POST['mgusername'].'","'.hash('sha256', $_POST['mgpassword']).'", '.time().')';
+        $create_query_accesstype = 'INSERT INTO access (type, count) VALUES ("uv","0");INSERT INTO access (type, count) VALUES ("pv","0");INSERT INTO access (type, count) VALUES ("ip","0");';
         $res_query = $mysqli->query($create_query);
         if (!$res_query){
             echo json_encode(array('type'=>'error','msg'=>'创建数据表时发生错误:'.$res_query->error));
@@ -80,6 +104,12 @@
         $res_query_log = $mysqli->query($create_query_log);
         if (!$res_query_log){
             echo json_encode(array('type'=>'error','msg'=>'创建日志表时发生错误:'.$res_query_log->error));
+            $mysqli->query('rollback;');
+            return;
+        }
+        $res_query_logdetail = $mysqli->query($create_query_logdetail);
+        if (!$res_query_logdetail){
+            echo json_encode(array('type'=>'error','msg'=>'创建短链接日志时发生错误:'.$res_query_logdetail->error));
             $mysqli->query('rollback;');
             return;
         }
@@ -101,9 +131,27 @@
             $mysqli->query('rollback;');
             return;
         }
+        $res_query_access = $mysqli->query($create_query_access);
+        if (!$res_query_access){
+            echo json_encode(array('type'=>'error','msg'=>'创建访问记录表时发生错误:'.$res_query_manager->error));
+            $mysqli->query('rollback;');
+            return;
+        }
+        $res_query_accesslog = $mysqli->query($create_query_accesslog);
+        if (!$res_query_accesslog){
+            echo json_encode(array('type'=>'error','msg'=>'创建访问记录表时发生错误:'.$res_query_manager->error));
+            $mysqli->query('rollback;');
+            return;
+        }
         $res_query_manager = $mysqli->query($create_query_manager);
         if (!$res_query_manager){
             echo json_encode(array('type'=>'error','msg'=>'创建管理员时发生错误:'.$res_query_manager->error));
+            $mysqli->query('rollback;');
+            return;
+        }
+        $res_query_accesstype = $mysqli->multi_query($create_query_accesstype);
+        if (!$res_query_manager){
+            echo json_encode(array('type'=>'error','msg'=>'创建访问记录类型时发生错误:'.$res_query_manager->error));
             $mysqli->query('rollback;');
             return;
         }

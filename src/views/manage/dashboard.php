@@ -53,8 +53,13 @@
                         <dd data-item="userlog">登录日志</dd>
                     </dl>
                 </li>
-                <li data-item="site">
+                <li data-submenu="true">
                     <a class="menu-sideline"></a><i class="fa fa-sitemap"></i><span>站点</span>
+                    <a class="treeview-toggle"><i class="fa fa-caret-left"></i></a>
+                    <dl class="treeview">
+                        <dd data-item="site">站点管理</dd>
+                        <dd data-item="sitelog">访问日志</dd>
+                    </dl>
                 </li>
             </ul>
         </div>
@@ -122,7 +127,7 @@
 
             var page = getUrlParam('p');
             switch(page){
-                case 'data':case 'site':
+                case 'data':
                     $('[data-item='+page+']').addClass('menu-item-selected');
                     break;
                 default:
