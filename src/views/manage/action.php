@@ -1,31 +1,10 @@
 <?php
-function getIP()
-{
-    static $realip;
-    if (isset($_SERVER)){
-        if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
-            $realip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-        } else if (isset($_SERVER["HTTP_CLIENT_IP"])) {
-            $realip = $_SERVER["HTTP_CLIENT_IP"];
-        } else {
-            $realip = $_SERVER["REMOTE_ADDR"];
-        }
-    } else {
-        if (getenv("HTTP_X_FORWARDED_FOR")){
-            $realip = getenv("HTTP_X_FORWARDED_FOR");
-        } else if (getenv("HTTP_CLIENT_IP")) {
-            $realip = getenv("HTTP_CLIENT_IP");
-        } else {
-            $realip = getenv("REMOTE_ADDR");
-        }
-    }
-    return $realip;
-}
 if (file_exists('../install.lock')) {
     session_start();
     include_once '../config.php';
     include_once '../sqlconn.php';
     include_once '../safe.php';
+    require_once '../function.php';
     if ($mysqli->connect_errno){
         echo json_encode(array('type' => 'error', 'code' => 100, 'error' => '无法连接至数据库。'));
         return;
@@ -43,6 +22,7 @@ if (file_exists('../install.lock')) {
                 }
                 //安全过滤
                 $u = fn_safe($_POST['username']);
+                $p = fn_safe($_POST['password']);
                 //从数据库查询密码
                 $query_login = $mysqli->prepare('SELECT id,password FROM managers WHERE username=?;');
                 $query_login->bind_param('s', $u);
@@ -56,7 +36,7 @@ if (file_exists('../install.lock')) {
                 if ($query_login->num_rows() > 0) {
                     $query_login->fetch();
                     $query_login->close();
-                    if ($pwd === $_POST['password']) {
+                    if ($pwd === hash('sha256',$p)) {
                         //密码比对正确
                         $_SESSION['admin'] = true;
                         $_SESSION['username'] = $u;

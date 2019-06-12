@@ -4,6 +4,7 @@ if (file_exists('../install.lock')) {
     include_once '../config.php';
     include_once '../sqlconn.php';
     include_once '../safe.php';
+    include_once './3rdparty/qqwry.php';
     $admin = false;
     if ($mysqli->connect_errno){
         echo json_encode(array('type' => 'error', 'code' => 100, 'error' => '无法连接至数据库。'));
@@ -85,8 +86,10 @@ if (file_exists('../install.lock')) {
                 $query_userlog->bind_result($id, $userid,$username,$logintime,$loginip);
                 $query_userlog->execute();
                 $res_userlog = array();
+                $qqwry = new QQWry();
                 while ($query_userlog->fetch()) {
-                    $t = array('id'=>$id,'userid'=>$userid,'username'=>$username,'logintime'=>$logintime,'loginip'=>$loginip);
+                    $location = $qqwry->getlocation($loginip);
+                    $t = array('id'=>$id,'userid'=>$userid,'username'=>$username,'logintime'=>$logintime,'loginip'=>$loginip,'geo'=>$location['country'].' '.$location['area']);
                     array_push($res_userlog, $t);
                 }
                 $query_userlog->close();
@@ -131,6 +134,27 @@ if (file_exists('../install.lock')) {
                 $query_total = $mysqli->query('select count(*) as total from shortlinks');
                 $res_total = $query_total->fetch_array();
                 echo json_encode(array('rows'=>$res_customlink, 'total'=>$res_total['total']));
+            }
+            break;
+        case 'accesslog':
+            if (isset($_POST['limit']) || isset($_POST['offset'])){
+                $query_accesslog = $mysqli->prepare('select * from access_log order by id desc limit ?,?');
+                $limit = fn_safe($_POST['limit']);
+                $offset = fn_safe($_POST['offset']);
+                $query_accesslog->bind_param('ii', $offset, $limit);
+                $query_accesslog->bind_result($id,$time,$ip);
+                $query_accesslog->execute();
+                $res_accesslog = array();
+                $qqwry = new QQWry();
+                while ($query_accesslog->fetch()) {
+                    $location = $qqwry->getlocation($ip);
+                    $t = array('id'=>$id,'time'=>$time,'ip'=>$ip,'geo'=>$location['country'].' '.$location['area']);
+                    array_push($res_accesslog, $t);
+                }
+                $query_accesslog->close();
+                $query_total = $mysqli->query('select count(*) as total from access_log');
+                $res_total = $query_total->fetch_array();
+                echo json_encode(array('rows'=>$res_accesslog, 'total'=>$res_total['total']));
             }
             break;
         default:

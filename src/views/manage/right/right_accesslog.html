@@ -1,0 +1,60 @@
+<div class="content-container container-accesslog" id="container-accesslog" style="margin: 12px 48px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="table-accesslog-toolbar">
+                <button class="btn btn-sm btn-danger"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除7天前的日志</span></button>
+                <button class="btn btn-sm btn-danger"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除30天前的日志</span></button>
+                <button class="btn btn-sm btn-danger"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">清空日志</span></button>
+                <button class="btn btn-sm btn-secondary" style="float: right;"><i class="fa fa-refresh" aria-hidden="true"></i><span style="margin-left:8px;" onclick="refreshTable();">刷新列表</span></button>
+            </div>
+            <table id="table-accesslog"></table>
+        </div>
+    </div>
+    <script>
+        $('.model-title span').text('登录日志');
+
+        $('#table-accesslog').bootstrapTable({
+            url: '/manage/data.php',
+            method: 'POST',
+            contentType: "application/x-www-form-urlencoded",
+            cache: false,
+            pageSize: 20,
+            pageList: [],
+            queryParams: generateQueryParams,
+            pagination: true,
+            sidePagination: "server",
+            toolbar: "#table-accesslog-toolbar",
+            escape: true,
+            locale: 'zh-CN',
+            columns: [{
+                field: 'id',
+                title: 'ID'
+            }, {
+                field: 'time',
+                title: '访问时间',
+                formatter: (value, row, index) => {
+                    return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');;
+                }
+            }, {
+                field: 'ip',
+                title: 'IP'
+            }, {
+                field: 'geo',
+                title: 'GEO'
+            }]
+        });
+
+        function generateQueryParams(params) {
+            var p = {
+                limit: params.limit,
+                offset: params.offset,
+                type: 'accesslog'
+            }
+            return p;
+        }
+
+        function refreshTable(){
+            $("#table-accesslog").bootstrapTable('refresh');
+        }
+    </script>
+</div>

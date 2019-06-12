@@ -213,6 +213,9 @@
                 resizeChanged = false;
             }
         });
+
+        //stat
+        $.get('/stat.php');
     </script>
 
     <!-- animation -->

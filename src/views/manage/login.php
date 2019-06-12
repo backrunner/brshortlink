@@ -12,7 +12,6 @@
     <link rel="stylesheet" type="text/css" href="../static/main.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/toastr.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="../static/awesome-bootstrap-checkbox.css" />
     <script src="../static/jquery.min.js"></script>
     <script src="../static/admin.function.js"></script>
     <script src="../static/bootstrap.min.js"></script>
@@ -137,6 +136,7 @@
 
         function submitLogin(username, password) {
             let p = CryptoJS.SHA256(password).toString();
+            console.log(p);
             $.ajax({
                 type: 'POST',
                 url: 'action.php',

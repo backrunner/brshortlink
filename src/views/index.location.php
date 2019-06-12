@@ -19,18 +19,14 @@ if ($stmt->num_rows() > 0){
     if ($expires != null){
         if ($expires >= time()){
             header('Location: '.$url);
-            if (STAT_ENABLED){
-                location_stat($id,false);
-            }
+            location_stat($id,false);
         } else {
             $error_code = 303;   //链接过期，不能访问
             include_once('./index.error.php');
         }
     } else {
         header('Location: '.$url);
-        if (STAT_ENABLED){
-            location_stat($id,false);
-        }
+        location_stat($id,false);
     }
     return;
 } else {
@@ -53,18 +49,14 @@ if ($stmt->num_rows() > 0){
     if ($expires != null){
         if ($expires >= time()){
             header('Location: '.$url);
-            if (STAT_ENABLED){
-                location_stat($cid, true);
-            }
+            location_stat($cid, true);
         } else {
             $error_code = 303;   //链接过期，不能访问
             include_once('./index.error.php');
         }
     } else {
         header('Location: '.$url);
-        if (STAT_ENABLED){
-            location_stat($cid, true);
-        }
+        location_stat($cid, true);
     }
     return;
 } else {

@@ -83,17 +83,6 @@
                         <div class="col-sm-2"><label>管理员密码</label></div>
                         <div class="col-sm-10"><input type="password" id="i-mgpassword" class="form-control"></div>
                     </div>
-                    <div class="form-row">
-                        <div class="col-sm-2"><label>统计</label></div>
-                        <div class="col-sm-10">
-                            <div class="abc-checkbox abc-checkbox-primary install-checkbox">
-                                <input type="checkbox" id="cb_stat">
-                                <label for="cb_stat">
-                                    是否启用统计
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -144,24 +133,6 @@
         <?php }?>
     </div>
     <script>
-        <?php
-        if (defined('STAT_ENABLED')){
-            echo 'var stat_enabled = '.STAT_ENABLED.';';
-            if (STAT_ENABLED){
-                echo "$(document).ready(function(){
-                    $('#cb_stat').prop('checked',true);
-                });";
-            }
-        } else {
-            echo 'var stat_enabled = false;';
-        }?>
-
-        $(document).ready(function(){
-            $('#cb_stat').change(function(){
-                stat_enabled = !stat_enabled;
-            });
-        });
-
         function submitInstall() {
             $('.btn').attr('disabled', 'disabled');
             $('.input').attr('disabled', 'disabled');
@@ -177,8 +148,7 @@
                     dbusername: $('#i-dbusername').val(),
                     dbpassword: $('#i-dbpassword').val(),
                     mgusername: $('#i-mgusername').val(),
-                    mgpassword: CryptoJS.SHA256($('#i-mgpassword').val()).toString(),
-                    statenabled: stat_enabled
+                    mgpassword: CryptoJS.SHA256($('#i-mgpassword').val()).toString()
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -208,6 +178,10 @@
             return div.innerHTML;
         }
     </script>
+
+    <?php if (!is_mobile_request()){ ?>
+    <script color="28,28,28" opacity='0.7' zIndex="-2" count="120" src="../static/canvas-nest.js"></script>
+    <?php } ?>
 </body>
 
 </html>

@@ -58,7 +58,7 @@
                     <a class="treeview-toggle"><i class="fa fa-caret-left"></i></a>
                     <dl class="treeview">
                         <dd data-item="site">站点管理</dd>
-                        <dd data-item="sitelog">访问日志</dd>
+                        <dd data-item="accesslog">访问日志</dd>
                     </dl>
                 </li>
             </ul>
@@ -85,7 +85,7 @@
             <?php
             if (isset($_GET['p'])){
                 switch($_GET['p']){
-                    case 'user':case 'userlog':case 'shortlink':case 'customlink':case 'site':case 'data':
+                    case 'user':case 'userlog':case 'shortlink':case 'customlink':case 'site':case 'data':case 'accesslog':
                         include_once('./right/right_'.$_GET['p'].'.html');
                         break;
                     default:
