@@ -76,26 +76,11 @@ if ($stmt->num_rows() > 0){
 function location_stat($id, $iscustom){
     global $mysqli;
     $custom = $iscustom?"custom_":"";
-    $stmt = $mysqli->prepare("SELECT id FROM shortlinks_".$custom."log WHERE linkid=?;");
+    $stmt = $mysqli->query("UPDATE shortlinks_".$custom."log SET count=count+'1', lasttime=".time()." WHERE linkid=?;");
     $stmt->bind_param('i', $id);
-    $stmt->bind_result($logid);
     $stmt->execute();
     if (!$stmt){
         return;
-    }
-    $stmt->store_result();
-    if ($stmt->num_rows() > 0){
-        $stmt->fetch();
-        $stmt->close();
-        $mysqli->query("UPDATE shortlinks_".$custom."log SET count=count+'1', lasttime=".time()." WHERE id=".$logid.";");
-    } else {
-        $stmt->close();
-        $stmt=$mysqli->prepare('INSERT INTO shortlinks_'.$custom.'log (linkid,count,lasttime) VALUES(?,?,?);');
-        $nowtime = time();
-        $init_count = 1;
-        $stmt->bind_param("iii",$id,$init_count,$nowtime);
-        $stmt->execute();
-        $stmt->close();
     }
 }
 ?>

@@ -1,5 +1,103 @@
 <div class="content-container container-shortlink" id="container-shortlink">
+    <div class="row">
+        <div class="col-md-12 header" style="margin-bottom: 0;">
+            <h3>链接列表</h3>
+        </div>
+        <div class="col-md-12">
+            <div id="table-shortlink-toolbar">
+                <button class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除过期短链接</span></button>
+                <button class="btn btn-sm btn-secondary" style="float: right;"><i class="fa fa-refresh" aria-hidden="true"></i><span style="margin-left:8px;" onclick="refreshTable();">刷新列表</span></button>
+            </div>
+            <table id="table-shortlink"></table>
+        </div>
+    </div>
     <script>
         $('.model-title span').text('普通短链接');
+
+        function str10to62(number) {
+            var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+                radix = chars.length,
+                qutient = +number,
+                arr = [];
+            do {
+                mod = qutient % radix;
+                qutient = (qutient - mod) / radix;
+                arr.unshift(chars[mod]);
+            } while (qutient);
+            return arr.join('');
+        }
+
+        $('#table-shortlink').bootstrapTable({
+            url: '/manage/data.php',
+            method: 'POST',
+            contentType: "application/x-www-form-urlencoded",
+            cache: false,
+            pageSize: 20,
+            pageList: [],
+            queryParams: function(params){
+                var p = {
+                    limit: params.limit,
+                    offset: params.offset,
+                    type: 'shortlink'
+                }
+                return p;
+            },
+            pagination: true,
+            sidePagination: "server",
+            escape: true,
+            locale: 'zh-CN',
+            toolbar: '#table-shortlink-toolbar',
+            columns: [{
+                    field: 'id',
+                    title: 'ID'
+                }, {
+                    field: 'id',
+                    title: '短链接',
+                    formatter: (value, row, index) => {
+                        return '<a href="'+window.location.origin+'/'+str10to62(value)+'">'+window.location.origin+'/'+str10to62(value)+'</a>';
+                    }
+                },
+                {
+                    field: 'url',
+                    title: '原地址',
+                    formatter: (value, row, index) => {
+                        return '<a href="'+value+'">'+value+'</a>';
+                    }
+                }, {
+                    field: 'ctime',
+                    title: '创建时间',
+                    formatter: (value, row, index) => {
+                        return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }, {
+                    field: 'expires',
+                    title: '过期时间',
+                    formatter: (value, row, index) => {
+                        if (value == null){
+                            return '-';
+                        }
+                        return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }, {
+                    field: 'count',
+                    title: '访问量'
+                }, {
+                    field: 'lasttime',
+                    title: '最后一次访问',
+                    formatter: (value, row, index) => {
+                        if (value == null){
+                            return '-';
+                        }
+                        return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }, {
+                    field: 'id',
+                    title: '操作',
+                    formatter: (value, row, index) => {
+                        return '<button class="btn btn-sm btn-danger" onclick="deleteShortlink(' + value + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+                    }
+                }
+            ]
+        });
     </script>
 </div>

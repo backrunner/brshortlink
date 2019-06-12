@@ -186,7 +186,7 @@ function str10to62(number) {
       arr.unshift(chars[mod]);
     } while (qutient);
     return arr.join('');
-  }
+}
 
 function requestShortLink(link, custom_link, expires){
     if ($('#i-link').hasClass('is-invalid')){

@@ -11,7 +11,6 @@ if ($_GET['action'] == 'shortlink'){
             $link_hash = sha1($long_link);  //先计算hash，后面会用到
             if (isset($_GET['expires'])){
                 //有过期时间的不查重
-
                 $exp = intval($_GET['expires']);
                 if (check_expires($exp)){
                     //预处理插入
@@ -48,17 +47,26 @@ if ($_GET['action'] == 'shortlink'){
                 }
                 $query_existed->close();
                 //准备插入
-                $stmt = $mysqli->prepare("INSERT INTO shortlinks (url, urlhash, ctime) VALUES (?,?,?);");
+                $mysqli->query('begin');
+                $query_insert = $mysqli->prepare("INSERT INTO shortlinks (url, urlhash, ctime) VALUES (?,?,?);");
                 $nowtime=time();
-                $stmt->bind_param('ssi',$long_link, $link_hash, $nowtime);
-                $res = $stmt->execute();
-                if ($res){
-                    //插入执行成功
-                    echo json_encode(array('type'=>'success','short_link'=>mysqli_insert_id($mysqli)));
-                } else {
+                $query_insert->bind_param('ssi',$long_link, $link_hash, $nowtime);
+                $res = $query_insert->execute();
+                if (!$query_insert){
+                    $mysqli->query('rollback');
                     echo json_encode(array('type'=>'error','error_code'=>410,'error'=>'插入短链接到数据库失败。'));
+                    return;
                 }
-                $stmt->close();
+                $query_insert->close();
+                $linkid = mysqli_insert_id($mysqli);
+                $res_insertlog = $mysqli->query('INSERT INTO shortlinks_log (linkid,count) VALUES('.$linkid.',0);');
+                if (!$res_insertlog){
+                    $mysqli->query('rollback');
+                    echo json_encode(array('type'=>'error','error_code'=>410,'error'=>'插入短链接到数据库失败。'));
+                    return;
+                }
+                $mysqli->query('commit');
+                echo json_encode(array('type'=>'success','short_link'=>$linkid));
             }
         } else if ($_GET['link_type'] == 'custom'){
             if (isset($_GET['custom_link'])){
@@ -99,33 +107,51 @@ if ($_GET['action'] == 'shortlink'){
                     $exp = intval($_GET['expires']);
                     if (check_expires($exp)){
                         //预处理插入
-                        $stmt = $mysqli->prepare('INSERT INTO shortlinks_custom (cname, `url`, ctime, expires) VALUES (?,?,?,?);');
+                        $mysqli->query('begin');
+                        $query_insert_custom = $mysqli->prepare('INSERT INTO shortlinks_custom (cname, `url`, ctime, expires) VALUES (?,?,?,?);');
                         $nowtime = time();
-                        $stmt->bind_param('ssii',$custom_link, $long_link, $nowtime, $exp);
-                        $res = $stmt->execute();
-                        if ($res){
-                            //插入执行成功
-                            echo json_encode(array('type'=>'success','short_link'=>$custom_link));
-                        } else {
+                        $query_insert_custom->bind_param('ssii',$custom_link, $long_link, $nowtime, $exp);
+                        $res = $query_insert_custom->execute();
+                        if (!$res){
+                            $mysqli->query('rollback');
                             echo json_encode(array('type'=>'error','error_code'=>410,'error'=>'插入短链接到数据库失败。'));
+                            return;
                         }
-                        $stmt->close();
+                        $query_insert_custom->close();
+                        $linkid = mysqli_insert_id($mysqli);
+                        $res_insertlog = $mysqli->query('INSERT INTO shortlinks_custom_log (linkid,count) VALUES('.$linkid.',0);');
+                        if (!$res_insertlog){
+                            $mysqli->query('rollback');
+                            echo json_encode(array('type'=>'error','error_code'=>410,'error'=>'插入短链接到数据库失败。'));
+                            return;
+                        }
+                        $mysqli->query('commit');
+                        //插入执行成功
+                        echo json_encode(array('type'=>'success','short_link'=>$custom_link));
                     } else {
                         echo json_encode(array('type'=>'error','error_code'=>402,'error'=>'过期时间错误。'));
                     }
                 } else {
                     //预处理插入
-                    $stmt = $mysqli->prepare('INSERT INTO shortlinks_custom (cname, `url`, ctime) VALUES (?,?,?);');
+                    $mysqli->query('begin');
+                    $query_insert_custom = $mysqli->prepare('INSERT INTO shortlinks_custom (cname, `url`, ctime) VALUES (?,?,?);');
                     $nowtime = time();
-                    $stmt->bind_param('ssi',$custom_link, $long_link, $nowtime);
-                    $res = $stmt->execute();
-                    if ($res){
-                        //插入执行成功
-                        echo json_encode(array('type'=>'success','short_link'=>mysqli_insert_id($mysqli)));
-                    } else {
+                    $query_insert_custom->bind_param('ssi',$custom_link, $long_link, $nowtime);
+                    $res = $query_insert_custom->execute();
+                    if (!$res){
+                        $mysqli->query('rollback');
                         echo json_encode(array('type'=>'error','error_code'=>410,'error'=>'插入短链接到数据库失败。'));
+                        return;
                     }
-                    $stmt->close();
+                    $query_insert_custom->close();
+                    $linkid = mysqli_insert_id($mysqli);
+                    $res_insertlog = $mysqli->query('INSERT INTO shortlinks_custom_log (linkid,count) VALUES('.$linkid.',0);');
+                    if (!$res_insertlog){
+                        $mysqli->query('rollback');
+                        echo json_encode(array('type'=>'error','error_code'=>410,'error'=>'插入短链接到数据库失败。'));
+                        return;
+                    }
+                    $mysqli->query('commit');
                 }
             } else {
                 echo json_encode(array('type'=>'error','error_code'=>401,'error'=>'提交的参数不完整。'));

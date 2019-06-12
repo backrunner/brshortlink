@@ -95,6 +95,44 @@ if (file_exists('../install.lock')) {
                 echo json_encode(array('rows'=>$res_userlog, 'total'=>$res_total['total']));
             }
             break;
+        case 'shortlink':
+            if (isset($_POST['limit']) || isset($_POST['offset'])){
+                $query_shortlink = $mysqli->prepare('select shortlinks.id, url, ctime, expires, count, lasttime from shortlinks, shortlinks_log where shortlinks.id=shortlinks_log.linkid order by shortlinks.id desc limit ?,?');
+                $limit = fn_safe($_POST['limit']);
+                $offset = fn_safe($_POST['offset']);
+                $query_shortlink->bind_param('ii', $offset, $limit);
+                $query_shortlink->bind_result($id, $url,$ctime,$expires,$count,$lasttime);
+                $query_shortlink->execute();
+                $res_shortlink = array();
+                while ($query_shortlink->fetch()) {
+                    $t = array('id'=>$id,'url'=>$url,'ctime'=>$ctime,'expires'=>$expires,'count'=>$count,'lasttime'=>$lasttime);
+                    array_push($res_shortlink, $t);
+                }
+                $query_shortlink->close();
+                $query_total = $mysqli->query('select count(*) as total from shortlinks');
+                $res_total = $query_total->fetch_array();
+                echo json_encode(array('rows'=>$res_shortlink, 'total'=>$res_total['total']));
+            }
+            break;
+        case 'customlink':
+            if (isset($_POST['limit']) || isset($_POST['offset'])){
+                $query_customlink = $mysqli->prepare('select shortlinks_custom.id, cname, url, ctime, expires, count, lasttime from shortlinks_custom, shortlinks_custom_log where shortlinks_custom.id=shortlinks_custom_log.linkid order by shortlinks_custom.id desc limit ?,?');
+                $limit = fn_safe($_POST['limit']);
+                $offset = fn_safe($_POST['offset']);
+                $query_customlink->bind_param('ii', $offset, $limit);
+                $query_customlink->bind_result($id,$cname,$url,$ctime,$expires,$count,$lasttime);
+                $query_customlink->execute();
+                $res_customlink = array();
+                while ($query_customlink->fetch()) {
+                    $t = array('id'=>$id,'url'=>$url,'ctime'=>$ctime,'expires'=>$expires,'count'=>$count,'lasttime'=>$lasttime);
+                    array_push($res_customlink, $t);
+                }
+                $query_customlink->close();
+                $query_total = $mysqli->query('select count(*) as total from shortlinks');
+                $res_total = $query_total->fetch_array();
+                echo json_encode(array('rows'=>$res_customlink, 'total'=>$res_total['total']));
+            }
+            break;
         default:
             echo json_encode(array('type' => 'error', 'code' => 301, 'error' => '参数错误。'));
             break;
