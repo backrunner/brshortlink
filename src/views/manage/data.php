@@ -157,6 +157,15 @@ if (file_exists('../install.lock')) {
                 echo json_encode(array('rows'=>$res_accesslog, 'total'=>$res_total['total']));
             }
             break;
+        case 'todayVisit':
+            $res_todayVisit = $mysqli->query("SELECT COUNT(*) as todayVisit FROM access_log WHERE time BETWEEN ".(time()-86400)." AND ".time());
+            if (!$res_todayVisit){
+                echo json_encode(array('type' => 'error', 'code' => 102, 'error' => '查询时出现错误。'));
+                return;
+            }
+            $res_todayVisit = $res_todayVisit->fetch_array();
+            echo json_encode(array('type' => 'success', 'code' => 200, 'data' => $res_todayVisit['todayVisit']));
+            break;
         default:
             echo json_encode(array('type' => 'error', 'code' => 301, 'error' => '参数错误。'));
             break;

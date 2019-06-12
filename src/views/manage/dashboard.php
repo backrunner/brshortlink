@@ -162,6 +162,9 @@
                             window.location.href="/manage/";
                         } else {
                             toastr.error(data.error);
+                            setTimeout(function(){
+                                window.location.href="/manage/";
+                            },200);
                         }
                     },
                     error: function (err) {
@@ -196,6 +199,18 @@
                 var nav = document.getElementById('navbarResponsive');
                 if (nav != undefined){
                     nav.setAttribute('class','navbar-collapse collapse');
+                }
+            });
+
+            $(document).on('click','.tablebtn-del',function(){
+                if (typeof $(this).attr('data-delconfirm') == "undefined" || $(this).attr('data-delconfirm')!="true"){
+                    let t = $(this);
+                    t.append('<span style="margin-left:8px;">确认删除？</span>');
+                    t.attr('data-delconfirm','true');
+                    setTimeout(function(){
+                        t.removeAttr('data-delconfirm');
+                        t.children('span').remove();
+                    },3000);
                 }
             });
         </script>

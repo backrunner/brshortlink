@@ -93,7 +93,7 @@
                     field: 'id',
                     title: '操作',
                     formatter: (value, row, index) => {
-                        return '<button class="btn btn-sm btn-danger" onclick="deleteShortlink(' + value + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+                        return '<button class="btn btn-sm btn-danger tablebtn-del" id="btndel-'+value+'" onclick="deleteShortlink(' + value + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
                     }
                 }
             ]
