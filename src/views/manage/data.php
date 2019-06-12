@@ -89,7 +89,7 @@ if (file_exists('../install.lock')) {
                 $qqwry = new QQWry();
                 while ($query_userlog->fetch()) {
                     $location = $qqwry->getlocation($loginip);
-                    $t = array('id'=>$id,'userid'=>$userid,'username'=>$username,'logintime'=>$logintime,'loginip'=>$loginip,'geo'=>$location['country'].' '.$location['area']);
+                    $t = array('id'=>$id,'userid'=>$userid,'username'=>$username,'logintime'=>$logintime,'loginip'=>$loginip,'geo'=>$location['country'].' '.$location['province'].$location['city'].' '.$location['area']);
                     array_push($res_userlog, $t);
                 }
                 $query_userlog->close();
@@ -148,7 +148,7 @@ if (file_exists('../install.lock')) {
                 $qqwry = new QQWry();
                 while ($query_accesslog->fetch()) {
                     $location = $qqwry->getlocation($ip);
-                    $t = array('id'=>$id,'time'=>$time,'ip'=>$ip,'geo'=>$location['country'].' '.$location['area']);
+                    $t = array('id'=>$id,'time'=>$time,'ip'=>$ip,'geo'=>$location['country'].' '.$location['province'].$location['city'].' '.$location['area']);
                     array_push($res_accesslog, $t);
                 }
                 $query_accesslog->close();

@@ -1,5 +1,5 @@
 //copyright
-console.log('%cShortLink System%c\nDeveloped by BackRunner from pwp.app\nAn open source application under MIT license.\nversion: 0.9.2','font-size:20px;color:#1faeff;','font-size: 12px;color:#8f8f8f;');
+console.log('%cShortLink System%c\nDeveloped by BackRunner from pwp.app\nAn open source application under MIT license.\nversion: 0.9.8','font-size:20px;color:#1faeff;','font-size: 12px;color:#8f8f8f;');
 
 //cookie
 /*

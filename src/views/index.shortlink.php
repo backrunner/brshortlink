@@ -152,6 +152,8 @@ if ($_GET['action'] == 'shortlink'){
                         return;
                     }
                     $mysqli->query('commit');
+                    //插入执行成功
+                    echo json_encode(array('type'=>'success','short_link'=>$custom_link));
                 }
             } else {
                 echo json_encode(array('type'=>'error','error_code'=>401,'error'=>'提交的参数不完整。'));

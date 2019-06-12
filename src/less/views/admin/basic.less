@@ -1,4 +1,4 @@
-.no-select{
+.no-select {
     user-select: none;
     -moz-user-select: none;
     -ms-touch-select: none;
@@ -6,96 +6,121 @@
     -webkit-user-select: none;
 }
 
-.no-drag{
+.no-drag {
     -webkit-user-drag: none;
 }
 
-.no-select-drag{
+.no-select-drag {
     .no-select();
     .no-drag();
 }
 
-html{
+html {
     height: 100%;
 }
 
-body{
+body {
     height: 100%;
     font-family: Microsoft YaHei, Arial, Helvetica, sans-serif;
 }
 
-div{
+div {
     .no-select-drag();
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
     letter-spacing: 3px;
     .no-select-drag();
 }
 
-h3{
+h3 {
     font-size: 24px;
 }
 
-h4{
+h4 {
     font-size: 20px;
 }
 
-li{
+li {
     list-style: none;
 }
 
-.bg-primary{
+.bg-primary {
     background-color: #1faeff !important;
 }
 
-.btn-primary{
-    background:#1faeff linear-gradient(180deg, #42a6f5, #1faeff) repeat-x !important;
+.btn-primary {
+    background: #1faeff linear-gradient(180deg, #42a6f5, #1faeff) repeat-x !important;
 }
 
-.main-container{
+.main-container {
     max-width: none;
     padding-left: 0;
     padding-right: 0;
     width: 100%;
 }
-.container-right{
+
+.container-right {
     width: calc(100% - 240px);
     height: 100%;
     margin-left: 240px;
     padding-top: 140px;
 }
-.content-container{
+
+.content-container {
     margin: 24px 48px;
 }
-.header{
+
+.header {
     color: #878787;
     margin-bottom: 1em;
 }
-.card-header{
+
+.card-header {
     letter-spacing: 0.05em;
 }
-.modal-title{
+
+.modal-title {
     letter-spacing: 0.05rem;
 }
-.btn{
+
+.btn {
     padding: 0.4rem 1rem;
 }
-.btn-sm{
+
+.btn-sm {
     padding: 0.25rem 0.5rem;
 }
-.bs-bars{
+
+.bs-bars {
     width: 100%;
 }
-.form-control.is-valid{
-    background-size: calc(0.2em + 1rem) calc(0.2em + 1rem);
-}
-.form-control.is-invalid{
+
+.form-control.is-valid {
     background-size: calc(0.2em + 1rem) calc(0.2em + 1rem);
 }
 
-@media(max-width:768px){
-    .card{
+.form-control.is-invalid {
+    background-size: calc(0.2em + 1rem) calc(0.2em + 1rem);
+}
+
+
+.table {
+    table-layout: fixed;
+}
+
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media(max-width:768px) {
+    .card {
         margin-bottom: 12px;
     }
 }

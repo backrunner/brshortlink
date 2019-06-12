@@ -128,9 +128,9 @@ class QQWry {
             }
         }
         if (empty($location['province']))
-            $location['province'] = $location['country'];
+            $location['province'] = '';
         if (empty($location['city']))
-            $location['city'] = $location['country'];
+            $location['city'] = '';
         //sunan moify
         if (in_array($location['province'], $this->provinces)) {
             $location['country'] = "中国";

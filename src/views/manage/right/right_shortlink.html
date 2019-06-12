@@ -49,10 +49,12 @@
             toolbar: '#table-shortlink-toolbar',
             columns: [{
                     field: 'id',
-                    title: 'ID'
+                    title: 'ID',
+                    width: 100,
                 }, {
                     field: 'id',
                     title: '短链接',
+                    width: 200,
                     formatter: (value, row, index) => {
                         return '<a href="'+window.location.origin+'/'+str10to62(value)+'">'+window.location.origin+'/'+str10to62(value)+'</a>';
                     }
@@ -60,6 +62,7 @@
                 {
                     field: 'url',
                     title: '原地址',
+                    width: 1000,
                     formatter: (value, row, index) => {
                         return '<a href="' + value + '">' + value + '</a>';
                     }
@@ -93,6 +96,7 @@
                 }, {
                     field: 'id',
                     title: '操作',
+                    width: 150,
                     formatter: (value, row, index) => {
                         return '<button class="btn btn-sm btn-danger tablebtn-del" id="btndel-'+value+'" onclick="deleteShortlink(' + value + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
                     }
