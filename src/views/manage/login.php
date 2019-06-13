@@ -64,8 +64,8 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-sm-2"><label>登录</label></div>
-                            <div class="col-sm-10"><button class="btn btn-block btn-primary btn-manage-login" id="btn-login-m" onclick="checkForm();">登录</button></div>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10" style="margin-top: 18px;"><button class="btn btn-block btn-primary btn-manage-login" id="btn-login-m" onclick="checkForm();">登录</button></div>
                         </div>
                     </mvisi>
                 </div>

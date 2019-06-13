@@ -20,11 +20,14 @@ if (file_exists('../install.lock')) {
     $action = $_POST['action'];
     switch ($action){
         case 'add':
-        break;
+            if (isset($_POST['username']) && isset($_POST['password'])){
+                
+            }
+            break;
         case 'edit':
-        break;
+            break;
         case 'delete':
-        break;
+            break;
         default:
             echo json_encode(array('type' => 'error', 'code' => 301, 'error' => '参数错误。'));
             break;

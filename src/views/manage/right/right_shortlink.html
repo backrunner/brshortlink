@@ -60,6 +60,8 @@
                 var p = {
                     limit: params.limit,
                     offset: params.offset,
+                    order: params.order,
+                    sort: params.sort,
                     type: 'shortlink'
                 }
                 return p;
@@ -69,16 +71,19 @@
             escape: true,
             locale: 'zh-CN',
             toolbar: '#table-shortlink-toolbar',
+            sortName: 'id',
+            sortOrder: 'desc',
             columns: [{
                     field: 'id',
                     title: 'ID',
                     width: 100,
+                    sortable: true
                 }, {
-                    field: 'id',
+                    field: 'shortlink',
                     title: '短链接',
                     width: 200,
                     formatter: (value, row, index) => {
-                        return '<a href="'+window.location.origin+'/'+str10to62(value)+'">'+window.location.origin+'/'+str10to62(value)+'</a>';
+                        return '<a href="'+window.location.origin+'/'+value+'">'+window.location.origin+'/'+value+'</a>';
                     }
                 },
                 {
@@ -91,12 +96,14 @@
                 }, {
                     field: 'ctime',
                     title: '创建时间',
+                    sortable: true,
                     formatter: (value, row, index) => {
                         return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');
                     }
                 }, {
                     field: 'expires',
                     title: '过期时间',
+                    sortable: true,
                     formatter: (value, row, index) => {
                         if (value == null){
                             return '-';
@@ -106,10 +113,12 @@
                 }, {
                     field: 'count',
                     title: '访问量',
-                    width: 100
+                    width: 100,
+                    sortable: true
                 }, {
                     field: 'lasttime',
                     title: '最后一次访问',
+                    sortable: true,
                     formatter: (value, row, index) => {
                         if (value == null){
                             return '-';
@@ -117,11 +126,10 @@
                         return moment.unix(value).format('YYYY-MM-DD HH:mm:ss');
                     }
                 }, {
-                    field: 'id',
                     title: '操作',
                     width: 150,
                     formatter: (value, row, index) => {
-                        return '<button class="btn btn-sm btn-danger tablebtn-del" id="btndel-'+value+'" onclick="deleteShortlink(' + value + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+                        return '<button class="btn btn-sm btn-danger tablebtn-del" id="btndel-'+index+'" onclick="deleteShortlink(' + index + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
                     }
                 }
             ]

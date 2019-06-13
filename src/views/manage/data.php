@@ -60,7 +60,7 @@ if (file_exists('../install.lock')) {
             echo json_encode(array('type' => 'success', 'code' => 200, 'data' => $totalClick+$totalCustomClick));
             break;
         case 'user':
-            if (isset($_POST['limit'])||isset($_POST['offset'])){
+            if (isset($_POST['limit']) && isset($_POST['offset'])){
                 $query_user = $mysqli->prepare('select id, username, ctime from managers limit ?,?');
                 $limit = fn_safe($_POST['limit']);
                 $offset = fn_safe($_POST['offset']);
@@ -79,7 +79,7 @@ if (file_exists('../install.lock')) {
             }
             break;
         case 'userlog':
-            if (isset($_POST['limit']) || isset($_POST['offset'])){
+            if (isset($_POST['limit']) && isset($_POST['offset'])){
                 $query_userlog = $mysqli->prepare('select managers_log.id, managers_log.userid, username, logintime, loginip from managers_log, managers where managers_log.userid=managers.id order by managers_log.id desc limit ?,?');
                 $limit = fn_safe($_POST['limit']);
                 $offset = fn_safe($_POST['offset']);
@@ -100,8 +100,19 @@ if (file_exists('../install.lock')) {
             }
             break;
         case 'shortlink':
-            if (isset($_POST['limit']) || isset($_POST['offset'])){
-                $query_shortlink = $mysqli->prepare('select shortlinks.id, url, ctime, expires, count, lasttime from shortlinks, shortlinks_log where shortlinks.id=shortlinks_log.linkid order by shortlinks.id desc limit ?,?');
+            if (isset($_POST['limit']) && isset($_POST['offset']) && isset($_POST['sort']) && isset($_POST['order'])){
+                $sort_safe = ['id','ctime','expires','count','lasttime'];
+                $order_safe = ['desc','asc'];
+                $sort = fn_safe($_POST['sort']);
+                $order = fn_safe($_POST['order']);
+                if (!in_array($sort, $sort_safe) || !in_array($order, $order_safe)){
+                    return;
+                }
+                if ($sort == 'id'){
+                    $sort = 'shortlinks.id';
+                }
+                $sql = 'select shortlinks.id, url, ctime, expires, count, lasttime from shortlinks, shortlinks_log where shortlinks.id=shortlinks_log.linkid order by '.$sort.' '.$order.' limit ?,?';
+                $query_shortlink = $mysqli->prepare($sql);
                 $limit = fn_safe($_POST['limit']);
                 $offset = fn_safe($_POST['offset']);
                 $query_shortlink->bind_param('ii', $offset, $limit);
@@ -109,7 +120,7 @@ if (file_exists('../install.lock')) {
                 $query_shortlink->execute();
                 $res_shortlink = array();
                 while ($query_shortlink->fetch()) {
-                    $t = array('id'=>$id,'url'=>$url,'ctime'=>$ctime,'expires'=>$expires,'count'=>$count,'lasttime'=>$lasttime);
+                    $t = array('id'=>$id, 'shortlink'=>f10to62($id),'url'=>$url,'ctime'=>$ctime,'expires'=>$expires,'count'=>$count,'lasttime'=>$lasttime);
                     array_push($res_shortlink, $t);
                 }
                 $query_shortlink->close();
@@ -119,11 +130,23 @@ if (file_exists('../install.lock')) {
             }
             break;
         case 'customlink':
-            if (isset($_POST['limit']) || isset($_POST['offset'])){
-                $query_customlink = $mysqli->prepare('select shortlinks_custom.id, cname, url, ctime, expires, count, lasttime from shortlinks_custom, shortlinks_custom_log where shortlinks_custom.id=shortlinks_custom_log.linkid order by shortlinks_custom.id desc limit ?,?');
+            if (isset($_POST['limit']) && isset($_POST['offset'])){
+                $sort_safe = ['id','ctime','expires','count','lasttime'];
+                $order_safe = ['desc','asc'];
+                $sort = fn_safe($_POST['sort']);
+                $order = fn_safe($_POST['order']);
+                if (!in_array($sort, $sort_safe) || !in_array($order, $order_safe)){
+                    return;
+                }
+                if ($sort == 'id'){
+                    $sort = 'shortlinks_custom.id';
+                }
+                $sql = 'select shortlinks_custom.id, cname, url, ctime, expires, count, lasttime from shortlinks_custom, shortlinks_custom_log where shortlinks_custom.id=shortlinks_custom_log.linkid order by '.$sort.' '.$order.' limit ?,?';
+                $query_customlink = $mysqli->prepare($sql);
                 $limit = fn_safe($_POST['limit']);
                 $offset = fn_safe($_POST['offset']);
-                $query_customlink->bind_param('ii', $offset, $limit);
+                $sort = fn_safe($_POST['sort']);
+                $query_shortlink->bind_param('ii', $offset, $limit);
                 $query_customlink->bind_result($id,$cname,$url,$ctime,$expires,$count,$lasttime);
                 $query_customlink->execute();
                 $res_customlink = array();
@@ -138,7 +161,7 @@ if (file_exists('../install.lock')) {
             }
             break;
         case 'accesslog':
-            if (isset($_POST['limit']) || isset($_POST['offset'])){
+            if (isset($_POST['limit']) && isset($_POST['offset'])){
                 $query_accesslog = $mysqli->prepare('select * from access_log order by id desc limit ?,?');
                 $limit = fn_safe($_POST['limit']);
                 $offset = fn_safe($_POST['offset']);

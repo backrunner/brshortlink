@@ -108,20 +108,21 @@ li {
     background-size: calc(0.2em + 1rem) calc(0.2em + 1rem);
 }
 
-
-.table {
-    table-layout: fixed;
-}
-
 td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-@media(max-width:1600px){
+@media(width:2560px){
     .table {
-        table-layout: auto;
+        table-layout: fixed;
+    }
+}
+
+@media(width:1920px){
+    .table {
+        table-layout: fixed;
     }
 }
 

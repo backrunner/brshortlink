@@ -81,24 +81,24 @@
         $('#i-dbuser').val("<?php echo DB_USER;?>");
 
         //表单检查
-        function checkSiteForm(){
+        function checkSiteForm() {
             $('#form-site>.is-invalid').removeClass('is-invalid');
 
             var sitename = $('#i-sitename').val();
 
             let flag_emptyItem = false;
 
-            if (sitename.length < 1){
+            if (sitename.length < 1) {
                 $('#i-sitename').addClass('is-invalid');
                 flag_emptyItem = true;
             }
 
-            if (flag_emptyItem){
+            if (flag_emptyItem) {
                 toastr.error('有输入项为空，请检查。');
             }
         }
 
-        function checkDBForm(){
+        function checkDBForm() {
             //清空is-invalid样式
             $('#form-db>.is-invalid').removeClass('is-invalid');
 
@@ -110,30 +110,38 @@
 
             let flag_emptyItem = false;
 
-            if (dbhost.length < 1){
+            if (dbhost.length < 1) {
                 $('#i-dbhost').addClass('is-invalid');
                 flag_emptyItem = true;
             }
-            if (dbport.length < 1){
+            if (dbport.length < 1) {
                 $('#i-dbport').addClass('is-invalid');
                 flag_emptyItem = true;
             }
-            if (dbname.length < 1){
+            if (dbname.length < 1) {
                 $('#i-dbname').addClass('is-invalid');
                 flag_emptyItem = true;
             }
-            if (dbuser.length < 1){
+            if (dbuser.length < 1) {
                 $('#i-dbuser').addClass('is-invalid');
                 flag_emptyItem = true;
             }
-            if (dbpassword.length < 1){
+            if (dbpassword.length < 1) {
                 $('#i-dbpassword').addClass('is-invalid');
                 flag_emptyItem = true;
             }
 
-            if (flag_emptyItem){
+            if (flag_emptyItem) {
                 toastr.error('有输入项为空，请检查。');
             }
         }
     </script>
+    <style>
+        @media(max-width: 1024px){
+            .col-md-4{
+                flex:0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
 </div>

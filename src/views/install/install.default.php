@@ -135,6 +135,7 @@
     <script>
         function submitInstall() {
             $('.btn').attr('disabled', 'disabled');
+            $('.btn').html('安装中...');
             $('.input').attr('disabled', 'disabled');
             $.ajax({
                 url: '/install/install.php',
@@ -156,17 +157,22 @@
                     $('.input').removeAttr('disabled');
                     if (data.type == 'success') {
                         toastr.success(data.msg);
+                        $('.btn').html('安装成功');
                         setTimeout(function () {
                             window.location.href = "/";
                         }, 2500);
                     } else {
                         toastr.error(data.msg);
+                        $('.btn').removeAttr('disabled');
+                        $('.input').removeAttr('disabled');
+                        $('.btn').html('安装');
                     }
                 },
                 error: function (data) {
                     console.log(data);
                     $('.btn').removeAttr('disabled');
                     $('.input').removeAttr('disabled');
+                    $('.btn').html('安装');
                     toastr.error(htmlEncode(data.responseText));
                 }
             });

@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../static/bootswatch-materia.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/admin.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/toastr.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/nprogress.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/Chart.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/font-awesome.min.css" />
@@ -25,6 +26,33 @@
     <script src="../static/nprogress.min.js"></script>
     <script src="../static/Chart.min.js"></script>
     <script src="../static/bootstrap-table.min.js"></script>
+    <script>
+        $.fn.extend({
+            animateCss: function (animationName, callback) {
+                var animationEnd = (function (el) {
+                    var animations = {
+                        animation: 'animationend',
+                        OAnimation: 'oAnimationEnd',
+                        MozAnimation: 'mozAnimationEnd',
+                        WebkitAnimation: 'webkitAnimationEnd',
+                    };
+
+                    for (var t in animations) {
+                        if (typeof (el.style[t]) !== 'undefined') {
+                            return animations[t];
+                        }
+                    }
+                })(document.createElement('div'));
+
+                this.addClass('animated ' + animationName).one(animationEnd, function () {
+                    $(this).removeClass('animated ' + animationName);
+                    if (typeof callback === 'function') callback();
+                });
+
+                return this;
+            },
+        });
+    </script>
 </head>
 
 <body>
@@ -63,6 +91,9 @@
                         <dd data-item="accesslog">访问日志</dd>
                     </dl>
                 </li>
+                <li id="menu-item-logout">
+                    <a class="menu-sideline"></a><i class="fa fa-power-off"></i><span>登出 (<?php echo $_SESSION['username']; ?>)</span>
+                </li>
             </ul>
         </div>
     </aside>
@@ -80,6 +111,11 @@
                         <i class="fa fa-power-off"></i>
                         <span>退出登录</span>
                     </div>
+                </div>
+                <div class="menu-toggle">
+                    <button class="btn btn-primary" type="button" onclick="showMenu();">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -108,6 +144,7 @@
                         $(this).children('.treeview-toggle').children('i').removeClass('fa-caret-left');
                         $(this).children('.treeview-toggle').children('i').addClass('fa-caret-down');
                         $(this).children('.treeview').addClass('treeview-active');
+                        $(this).children('.treeview').animateCss('fadeIn faster');
                         $(this).addClass('menu-item-expanded');
                         $('[data-submenu=true][data-subitem-selected!=true]').removeClass('menu-item-selected');
                         $(this).addClass('menu-item-selected');
@@ -124,6 +161,14 @@
                     $('.menu-subitem-selected').removeClass('menu-subitem-selected');
                     $('.treeview-item-selected').removeClass('treeview-item-selected');
                     $(this).addClass('menu-item-selected');
+                        if (screen.width<=1024){
+                        if (menu_showed){
+                            menu_showed = false;
+                            $('.container-menu').animateCss('fadeOut faster', function(){
+                                $('.container-menu').hide();
+                            });
+                        }
+                    }
                 }
             });
 
@@ -144,6 +189,10 @@
             }
 
             $('.user-loginout').click(function () {
+               logout();
+            });
+
+            function logout(){
                 $.ajax({
                     type: 'POST',
                     url: 'action.php',
@@ -173,7 +222,7 @@
                         console.error(err);
                     }
                 });
-            });
+            }
 
             $('dd').click(function(e){
                 $('.treeview-item-selected').removeClass('treeview-item-selected');
@@ -184,6 +233,14 @@
                 $(this).parent().parent().addClass('menu-subitem-selected');
                 $('[data-subitem-selected]').removeAttr('data-subitem-selected');
                 $(this).parent().parent().attr('data-subitem-selected','true');
+                if (screen.width<=1024){
+                    if (menu_showed){
+                        menu_showed = false;
+                        $('.container-menu').animateCss('fadeOut faster', function(){
+                            $('.container-menu').hide();
+                        });
+                    }
+                }
                 e.stopPropagation();
             });
 
@@ -215,6 +272,24 @@
                     },3000);
                 }
             });
+
+            var menu_showed = false;
+            function showMenu(){
+                if (menu_showed){
+                    $('.container-menu').animateCss('fadeOut faster', function(){
+                        $('.container-menu').hide();
+                        menu_showed = false;
+                    });
+                } else {
+                    menu_showed = true;
+                    $('.container-menu').show();
+                    $('.container-menu').animateCss('fadeIn faster');
+                }
+            }
+
+            $('#menu-item-logout').click(function(){
+                logout();
+            })
         </script>
     </div>
 </body>
