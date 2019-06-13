@@ -63,6 +63,9 @@ gulp.task('requirements', async() => {
     //pjax
     gulp.src('node_modules/jquery-pjax/jquery.pjax.js')
         .pipe(gulp.dest('public/static'));
+    //chart.js
+    gulp.src(['bower_components/chart.js/dist/Chart.min.js', 'bower_components/chart.js/dist/Chart.min.css'])
+        .pipe(gulp.dest('public/static'));
     await gulp.src('bower_components/bootstrap/dist/js/bootstrap.min.js')
         .pipe(gulp.dest('public/static'));
 });

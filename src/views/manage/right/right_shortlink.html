@@ -5,12 +5,34 @@
         </div>
         <div class="col-md-12">
             <div id="table-shortlink-toolbar">
-                <button class="btn btn-sm btn-danger" data-toggle="modal"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除过期短链接</span></button>
+                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-delExpiredLog"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除过期短链接</span></button>
                 <button class="btn btn-sm btn-secondary" style="float: right;"><i class="fa fa-refresh" aria-hidden="true"></i><span style="margin-left:8px;" onclick="refreshTable();">刷新列表</span></button>
             </div>
             <table id="table-shortlink"></table>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-delExpiredLog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认操作</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要删除所有已过期的短链接吗？</p>
+                    <p>该操作不可逆，短链接一旦删除将无法恢复。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $('.model-title span').text('普通短链接');
 
@@ -62,7 +84,7 @@
                 {
                     field: 'url',
                     title: '原地址',
-                    width: 1000,
+                    width: ((screen.width<=1920)?550:1000),
                     formatter: (value, row, index) => {
                         return '<a href="' + value + '">' + value + '</a>';
                     }
@@ -83,7 +105,8 @@
                     }
                 }, {
                     field: 'count',
-                    title: '访问量'
+                    title: '访问量',
+                    width: 100
                 }, {
                     field: 'lasttime',
                     title: '最后一次访问',
@@ -105,7 +128,7 @@
         });
 
         function deleteShortlink(){
-
+            
         }
     </script>
 </div>

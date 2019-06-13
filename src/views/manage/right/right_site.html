@@ -8,13 +8,13 @@
         <div class="col-md-12 header">
             <h3>站点设置</h3>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" id="form-site">
             <div class="form-group">
                 <label>站点名称</label>
                 <input class="form-control" type="text" id="i-sitename">
             </div>
             <div class="form-group" style="float: right;">
-                <button class="btn btn-primary">更新</button>
+                <button class="btn btn-primary" onclick="checkSiteForm();">更新</button>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
         <div class="col-md-12 header">
             <h3>数据库设置</h3>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" id="form-db">
             <div class="form-group">
                 <label>地址</label>
                 <input class="form-control" type="text" id="i-dbhost">
@@ -44,10 +44,32 @@
                 <input class="form-control" type="password" id="i-dbpassword">
             </div>
             <div class="form-group" style="float: right;">
-                <button class="btn btn-primary">更新</button>
+                <button class="btn btn-primary" onclick="checkDBForm();">更新</button>
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-updateDBSettings">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认操作</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要更改数据库设置吗？</p>
+                    <p>该操作可能会导致站点不可用。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">确认</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $('.model-title span').text('站点管理');
 
@@ -57,5 +79,61 @@
         $('#i-dbport').val("<?php echo DB_PORT;?>");
         $('#i-dbname').val("<?php echo DB_NAME;?>");
         $('#i-dbuser').val("<?php echo DB_USER;?>");
+
+        //表单检查
+        function checkSiteForm(){
+            $('#form-site>.is-invalid').removeClass('is-invalid');
+
+            var sitename = $('#i-sitename').val();
+
+            let flag_emptyItem = false;
+
+            if (sitename.length < 1){
+                $('#i-sitename').addClass('is-invalid');
+                flag_emptyItem = true;
+            }
+
+            if (flag_emptyItem){
+                toastr.error('有输入项为空，请检查。');
+            }
+        }
+
+        function checkDBForm(){
+            //清空is-invalid样式
+            $('#form-db>.is-invalid').removeClass('is-invalid');
+
+            var dbhost = $('#i-dbhost').val();
+            var dbport = $('#i-dbport').val();
+            var dbname = $('#i-dbname').val();
+            var dbuser = $('#i-dbuser').val();
+            var dbpassword = $('#i-dbpassword').val();
+
+            let flag_emptyItem = false;
+
+            if (dbhost.length < 1){
+                $('#i-dbhost').addClass('is-invalid');
+                flag_emptyItem = true;
+            }
+            if (dbport.length < 1){
+                $('#i-dbport').addClass('is-invalid');
+                flag_emptyItem = true;
+            }
+            if (dbname.length < 1){
+                $('#i-dbname').addClass('is-invalid');
+                flag_emptyItem = true;
+            }
+            if (dbuser.length < 1){
+                $('#i-dbuser').addClass('is-invalid');
+                flag_emptyItem = true;
+            }
+            if (dbpassword.length < 1){
+                $('#i-dbpassword').addClass('is-invalid');
+                flag_emptyItem = true;
+            }
+
+            if (flag_emptyItem){
+                toastr.error('有输入项为空，请检查。');
+            }
+        }
     </script>
 </div>

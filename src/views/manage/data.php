@@ -3,6 +3,7 @@ if (file_exists('../install.lock')) {
     session_start();
     include_once '../config.php';
     include_once '../sqlconn.php';
+    include_once '../function.php';
     include_once '../safe.php';
     include_once './3rdparty/qqwry.php';
     $admin = false;
@@ -165,6 +166,30 @@ if (file_exists('../install.lock')) {
             }
             $res_todayVisit = $res_todayVisit->fetch_array();
             echo json_encode(array('type' => 'success', 'code' => 200, 'data' => $res_todayVisit['todayVisit']));
+            break;
+        case 'hotlink':
+            $query_hotlink = $mysqli->prepare("SELECT shortlinks.id, count FROM shortlinks, shortlinks_log WHERE shortlinks.id=shortlinks_log.linkid ORDER BY count DESC LIMIT 10");
+            $query_hotlink->bind_result($id, $count);
+            $query_hotlink->execute();
+            $res_hotlink_labels = array();
+            $res_hotlink_dataset = array();
+            while ($query_hotlink->fetch()) {
+                array_push($res_hotlink_labels, '/'.f10to62($id));
+                array_push($res_hotlink_dataset, $count);
+            }
+            echo (json_encode(array('labels'=>$res_hotlink_labels, 'dataset'=>$res_hotlink_dataset)));
+            break;
+        case 'hotcustomlink':
+            $query_hotlink = $mysqli->prepare("SELECT shortlinks_custom.id, count FROM shortlinks_custom, shortlinks_custom_log WHERE shortlinks_custom.id=shortlinks_custom_log.linkid ORDER BY count DESC LIMIT 10");
+            $query_hotlink->bind_result($id, $count);
+            $query_hotlink->execute();
+            $res_hotlink_labels = array();
+            $res_hotlink_dataset = array();
+            while ($query_hotlink->fetch()) {
+                array_push($res_hotlink_labels, '/'.f10to62($id));
+                array_push($res_hotlink_dataset, $count);
+            }
+            echo (json_encode(array('labels'=>$res_hotlink_labels, 'dataset'=>$res_hotlink_dataset)));
             break;
         default:
             echo json_encode(array('type' => 'error', 'code' => 301, 'error' => '参数错误。'));

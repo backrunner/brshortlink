@@ -2,14 +2,78 @@
     <div class="row">
         <div class="col-md-12">
             <div id="table-accesslog-toolbar">
-                <button class="btn btn-sm btn-danger"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除7天前的日志</span></button>
-                <button class="btn btn-sm btn-danger"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除30天前的日志</span></button>
-                <button class="btn btn-sm btn-danger"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">清空日志</span></button>
+                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-deletelog-7"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除7天前的日志</span></button>
+                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-deletelog-30"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">删除30天前的日志</span></button>
+                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-truncatelog"><i class="fa fa-trash" aria-hidden="true"></i><span style="margin-left:8px;">清空日志</span></button>
                 <button class="btn btn-sm btn-secondary" style="float: right;"><i class="fa fa-refresh" aria-hidden="true"></i><span style="margin-left:8px;" onclick="refreshTable();">刷新列表</span></button>
             </div>
             <table id="table-accesslog"></table>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-deletelog-7">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认操作</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要删除7天前的所有登录日志吗？</p>
+                    <p>该操作不可逆，日志一旦删除将无法恢复。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-deletelog-30">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认操作</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要删除7天前的所有登录日志吗？</p>
+                    <p>该操作不可逆，日志一旦删除将无法恢复。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-truncatelog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认操作</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要清空登录日志吗？</p>
+                    <p>该操作不可逆，日志一旦被清空将无法恢复。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $('.model-title span').text('访问日志');
 

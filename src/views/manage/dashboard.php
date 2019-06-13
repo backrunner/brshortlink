@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="../static/admin.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/toastr.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/nprogress.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/Chart.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/bootstrap-table.min.css" />
     <script src="../static/jquery.min.js"></script>
@@ -22,6 +23,7 @@
     <script src="../static/toastr.min.js"></script>
     <script src="../static/moment.min.js"></script>
     <script src="../static/nprogress.min.js"></script>
+    <script src="../static/Chart.min.js"></script>
     <script src="../static/bootstrap-table.min.js"></script>
 </head>
 
