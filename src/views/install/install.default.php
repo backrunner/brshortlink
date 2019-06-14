@@ -134,6 +134,52 @@
     </div>
     <script>
         function submitInstall() {
+            //表单检查
+            var sitename = $('#i-sitename').val();
+            var dbhost = $('#i-dbhost').val();
+            var dbport = $('#i-dbport').val();
+            var dbname = $('#i-dbname').val();
+            var dbusername = $('#i-dbusername').val();
+            var dbpassword = $('#i-dbpassword').val();
+            var mgusername = $('#i-mgusername').val();
+            var mgpassword = $('#i-mgpassword').val();
+            let flag_check = false;
+            if (sitename.length < 1){
+                $('#i-sitename').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (dbhost.length < 1){
+                $('#i-dbhost').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (dbport.length < 1){
+                $('#i-dbport').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (dbname.length < 1){
+                $('#i-dbname').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (dbusername.length < 1){
+                $('#i-dbusername').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (dbpassword.length < 1){
+                $('#i-dbpassword').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (mgusername.length < 1){
+                $('#i-mgusername').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (mgpassword.length < 1){
+                $('#i-mgpassword').addClass('is-invalid');
+                flag_check = true;
+            }
+            if (flag_check){
+                toastr.error('有表单项未填写，请检查表单。');
+                return;
+            }
             $('.btn').attr('disabled', 'disabled');
             $('.btn').html('安装中...');
             $('.input').attr('disabled', 'disabled');
@@ -142,19 +188,17 @@
                 type: 'POST',
                 data: {
                     action: 'install',
-                    sitename: $('#i-sitename').val(),
-                    dbhost: $('#i-dbhost').val(),
-                    dbport: $('#i-dbport').val(),
-                    dbname: $('#i-dbname').val(),
-                    dbusername: $('#i-dbusername').val(),
-                    dbpassword: $('#i-dbpassword').val(),
-                    mgusername: $('#i-mgusername').val(),
-                    mgpassword: CryptoJS.SHA256($('#i-mgpassword').val()).toString()
+                    sitename: sitename,
+                    dbhost: dbhost,
+                    dbport: dbport,
+                    dbname: dbname,
+                    dbusername: dbusername,
+                    dbpassword: dbpassword,
+                    mgusername: mgusername,
+                    mgpassword: CryptoJS.SHA256(mgpassword).toString()
                 },
                 dataType: 'json',
                 success: function (data) {
-                    $('.btn').removeAttr('disabled');
-                    $('.input').removeAttr('disabled');
                     if (data.type == 'success') {
                         toastr.success(data.msg);
                         $('.btn').html('安装成功');
@@ -169,7 +213,7 @@
                     }
                 },
                 error: function (data) {
-                    console.log(data);
+                    console.error(data);
                     $('.btn').removeAttr('disabled');
                     $('.input').removeAttr('disabled');
                     $('.btn').html('安装');

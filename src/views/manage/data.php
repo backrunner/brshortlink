@@ -145,8 +145,7 @@ if (file_exists('../install.lock')) {
                 $query_customlink = $mysqli->prepare($sql);
                 $limit = fn_safe($_POST['limit']);
                 $offset = fn_safe($_POST['offset']);
-                $sort = fn_safe($_POST['sort']);
-                $query_shortlink->bind_param('ii', $offset, $limit);
+                $query_customlink->bind_param('ii', $offset, $limit);
                 $query_customlink->bind_result($id,$cname,$url,$ctime,$expires,$count,$lasttime);
                 $query_customlink->execute();
                 $res_customlink = array();
@@ -203,13 +202,13 @@ if (file_exists('../install.lock')) {
             echo (json_encode(array('labels'=>$res_hotlink_labels, 'dataset'=>$res_hotlink_dataset)));
             break;
         case 'hotcustomlink':
-            $query_hotlink = $mysqli->prepare("SELECT shortlinks_custom.id, count FROM shortlinks_custom, shortlinks_custom_log WHERE shortlinks_custom.id=shortlinks_custom_log.linkid ORDER BY count DESC LIMIT 10");
-            $query_hotlink->bind_result($id, $count);
+            $query_hotlink = $mysqli->prepare("SELECT cname, count FROM shortlinks_custom, shortlinks_custom_log WHERE shortlinks_custom.id=shortlinks_custom_log.linkid ORDER BY count DESC LIMIT 10");
+            $query_hotlink->bind_result($cname, $count);
             $query_hotlink->execute();
             $res_hotlink_labels = array();
             $res_hotlink_dataset = array();
             while ($query_hotlink->fetch()) {
-                array_push($res_hotlink_labels, '/'.f10to62($id));
+                array_push($res_hotlink_labels, '/'.$cname);
                 array_push($res_hotlink_dataset, $count);
             }
             echo (json_encode(array('labels'=>$res_hotlink_labels, 'dataset'=>$res_hotlink_dataset)));
