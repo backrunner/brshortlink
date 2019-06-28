@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12">
             <div id="table-user-toolbar">
-                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal-adduser" onclick="initModal();"><i class="fa fa-plus" aria-hidden="true"></i><span style="margin-left:8px;">添加用户</span></button>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal-adduser" onclick="initAddUserModal();"><i class="fa fa-plus" aria-hidden="true"></i><span style="margin-left:8px;">添加用户</span></button>
                 <button class="btn btn-sm btn-secondary" style="float: right;"><i class="fa fa-refresh" aria-hidden="true"></i><span style="margin-left:8px;" onclick="refreshTable();">刷新列表</span></button>
             </div>
             <table id="table-user"></table>
@@ -41,7 +41,7 @@
                 title: '操作',
                 formatter: (value, row, index) => {
                     if (value > 1) {
-                        return '<button class="btn btn-sm btn-primary onclick="editUser(' + value + ')"><i class="fa fa-edit" aria-hidden="true"></i></button><button class="btn btn-sm btn-danger tablebtn-del" id="btndel-'+value+'" onclick="deleteUser(' + value + ')" style="margin-left:8px;"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+                        return '<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal-edituser" onclick="editUser(' + value + ');"><i class="fa fa-edit" aria-hidden="true"></i></button><button class="btn btn-sm btn-danger tablebtn-del" id="btndel-'+value+'" onclick="deleteUser(' + value + ')" style="margin-left:8px;"><i class="fa fa-trash" aria-hidden="true"></i></button>';
                     }
                 }
             }]
@@ -56,7 +56,7 @@
             return p;
         }
 
-        function refreshTable() {
+        function refreshTable(){
             $("#table-user").bootstrapTable('refresh');
         }
     </script>
@@ -81,7 +81,55 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="checkForm();">提交</button>
+                    <button type="button" class="btn btn-primary" onclick="checkForm_add();">提交</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-edituser">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">编辑用户</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="i-username">用户名：</label>
+                        <input type="text" id="i-edit-username" class="form-control"  disabled="disabled">
+                    </div>
+                    <div class="form-group">
+                        <label for="i-password">密码：</label>
+                        <input type="password" id="i-edit-password" class="form-control" placeholder="(请输入新密码)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="checkForm_edit();">提交</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-delUser">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">确认操作</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-delUser-userDetail">您确定要删除吗？</p>
+                    <p>该操作不可逆，用户一旦删除将无法恢复。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="submitDelUser();" data-dismiss="modal">确认</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -89,7 +137,7 @@
     </div>
 
     <script>
-        function checkForm() {
+        function checkForm_add() {
             var username = $("#i-username").val();
             var password = $("#i-password").val();
 
@@ -140,15 +188,148 @@
             }
         }
 
-        function initModal(){
+        function initAddUserModal(){
             $('#i-username').removeClass('is-invalid');
             $('#i-password').removeClass('is-invalid');
             $('#i-username').removeClass('is-valid');
             $('#i-password').removeClass('is-valid');
         }
-        
-        function submitAdduser(){
-            
+
+        //添加用户
+        function submitAdduser(username, password){
+            $.ajax({
+                url: '/manage/user.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'add',
+                    username: username,
+                    password: CryptoJS.SHA256(password).toString()
+                },
+                success: function(data){
+                    if (data.code == 200){
+                        $('#modal-adduser').modal('hide');
+                        toastr.success('操作成功');
+                        //刷新列表
+                        refreshTable();
+                    } else {
+                        toastr.error('操作失败: '+data.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                    toastr.error('操作失败');
+                }
+            });
+        }
+
+        function initEditUserModal(){
+            $('#i-edit-password').removeClass('is-valid');
+            $('#i-edit-password').removeClass('is-invalid');
+            $('#i-edit-username').val('');
+            $('#i-edit-password').val('');
+        }
+
+        function editUser(index){
+            //初始化modal
+            initEditUserModal();
+            //根据index抓取用户名
+            let username = $("#table-user").children("tbody").children("[data-index='"+(index-1)+"']")[0].children[1].innerText;
+            $('#i-edit-username').val(username);
+        }
+
+        function checkForm_edit(){
+            var password = $("#i-edit-password").val();
+
+            var isFormChecked = true;
+            var password_fail = false;
+
+            if (password.length < 1) {
+                $('#i-edit-password').addClass('is-invalid');
+                toastr.error('请输入新密码。');
+                isFormChecked = false;
+                password_fail = true;
+            }
+
+            var strReg = '^([A-Za-z0-9!@#._])+$';
+            var re = new RegExp(strReg);
+
+            if (!password_fail) {
+                res = re.exec(password);
+                if (res == null) {
+                    isFormChecked = false;
+                    $('#i-edit-password').addClass('is-invalid');
+                    toastr.error("密码不允许包含中文、特殊字符。");
+                }
+            }
+
+            if (isFormChecked){
+                submitEditUser();
+            }
+        }
+
+        function submitEditUser(){
+            let username = $("#i-edit-username").val();
+            let password = $("#i-edit-password").val();
+            $.ajax({
+                url: '/manage/user.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'edit',
+                    username: username,
+                    password: CryptoJS.SHA256(password).toString()
+                },
+                success: function(data){
+                    if (data.code == 200){
+                        $('#modal-edituser').modal('hide');
+                        toastr.success('操作成功');
+                        //刷新列表
+                        refreshTable();
+                    } else {
+                        toastr.error('操作失败: '+data.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                    toastr.error('操作失败');
+                }
+            });
+        }
+
+        var readyToDel = '';
+
+        function deleteUser(index){
+            readyToDel = $("#table-user").children("tbody").children("[data-index='"+(index-1)+"']")[0].children[1].innerText;
+            if ($('#btndel-'+index).attr('data-delconfirm')=='true'){
+                $('#modal-delUser').modal('show');
+                $('#modal-delUser-userDetail').text('您确定要删除用户 ['+readyToDel+'] 吗？');
+            }
+        }
+
+        function submitDelUser(){
+            $.ajax({
+                url: '/manage/user.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'delete',
+                    username: readyToDel
+                },
+                success: function(data){
+                    if (data.code == 200){
+                        toastr.success('操作成功');
+                        //刷新列表
+                        refreshTable();
+                    } else {
+                        toastr.error('操作失败: '+data.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                    toastr.error('操作失败');
+                }
+            });
         }
     </script>
 </div>

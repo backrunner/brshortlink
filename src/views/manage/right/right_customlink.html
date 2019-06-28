@@ -26,7 +26,7 @@
                     <p>该操作不可逆，短链接一旦删除将无法恢复。</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-danger" onclick="cleanOutdateShortlink()" data-dismiss="modal">确认</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -133,5 +133,57 @@
                 }
             ]
         });
+
+        //清理过期的链接
+        function cleanOutdateShortlink(){
+            $.ajax({
+                url: '/manage/link.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    type: 'custom',
+                    action: 'cleanOutdate'
+                },
+                success: function(data){
+                    if (data.code == 200){
+                        toastr.success('删除成功');
+                        refreshTable();
+                    } else {
+                        toastr.error('操作失败：'+data.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                    toastr.error('操作失败');
+                }
+            });
+        }
+
+        function deleteShortlink(index){
+            if ($('#btndel-'+index).attr('data-delconfirm')=='true'){
+                var linkid = $("#table-shortlink").children('tbody').children('[data-index='+(index-1)+']')[0].children[0].innerText;
+                $.ajax({
+                    url: '/manage/link.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data:{
+                        action: 'delete',
+                        type: 'custom',
+                        linkid: parseInt(linkid)
+                    },
+                    success: function(data){
+                        if (data.code == 200){
+                            toastr.success('删除成功');
+                            refreshTable();
+                        } else {
+                            toastr.error('删除失败');
+                        }
+                    },
+                    error: function(err){
+                        toastr.error('删除失败');
+                    }
+                })
+            }
+        }
     </script>
 </div>

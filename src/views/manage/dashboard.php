@@ -26,6 +26,7 @@
     <script src="../static/nprogress.min.js"></script>
     <script src="../static/Chart.min.js"></script>
     <script src="../static/bootstrap-table.min.js"></script>
+    <script src="../static/crypto-js.js"></script>
     <script>
         $.fn.extend({
             animateCss: function (animationName, callback) {
