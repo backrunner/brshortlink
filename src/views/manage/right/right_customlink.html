@@ -12,6 +12,12 @@
         </div>
     </div>
 
+    <script>
+        function refreshTable() {
+            $("#table-customlink").bootstrapTable('refresh');
+        }
+    </script>
+
     <div class="modal fade" id="modal-delExpiredLog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -81,7 +87,7 @@
                 }, {
                     field: 'cname',
                     title: '短链接',
-                    width: ((screen.width<=1920)?250:300),
+                    width: ((screen.width <= 1920) ? 250 : 300),
                     formatter: (value, row, index) => {
                         return '<a href="' + window.location.origin + '/' + value + '">' + window.location.origin + '/' + value + '</a>';
                     }
@@ -89,7 +95,7 @@
                 {
                     field: 'url',
                     title: '原地址',
-                    width: ((screen.width<=1920)?600:1000),
+                    width: ((screen.width <= 1920) ? 600 : 1000),
                     formatter: (value, row, index) => {
                         return '<a href="' + value + '">' + value + '</a>';
                     }
@@ -128,14 +134,14 @@
                     title: '操作',
                     width: 150,
                     formatter: (value, row, index) => {
-                        return '<button class="btn btn-sm btn-danger tablebtn-del" id="btndel-'+index+'" onclick="deleteShortlink(' + index + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+                        return '<button class="btn btn-sm btn-danger tablebtn-del" id="btndel-' + index + '" onclick="deleteShortlink(' + index + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
                     }
                 }
             ]
         });
 
         //清理过期的链接
-        function cleanOutdateShortlink(){
+        function cleanOutdateShortlink() {
             $.ajax({
                 url: '/manage/link.php',
                 type: 'POST',
@@ -144,42 +150,42 @@
                     type: 'custom',
                     action: 'cleanOutdate'
                 },
-                success: function(data){
-                    if (data.code == 200){
+                success: function (data) {
+                    if (data.code == 200) {
                         toastr.success('删除成功');
                         refreshTable();
                     } else {
-                        toastr.error('操作失败：'+data.error);
+                        toastr.error('操作失败：' + data.error);
                     }
                 },
-                error: function(err){
+                error: function (err) {
                     console.error(err);
                     toastr.error('操作失败');
                 }
             });
         }
 
-        function deleteShortlink(index){
-            if ($('#btndel-'+index).attr('data-delconfirm')=='true'){
-                var linkid = $("#table-shortlink").children('tbody').children('[data-index='+(index-1)+']')[0].children[0].innerText;
+        function deleteShortlink(index) {
+            if ($('#btndel-' + index).attr('data-delconfirm') == 'true') {
+                var linkid = $("#table-shortlink").children('tbody').children('[data-index=' + (index - 1) + ']')[0].children[0].innerText;
                 $.ajax({
                     url: '/manage/link.php',
                     type: 'POST',
                     dataType: 'json',
-                    data:{
+                    data: {
                         action: 'delete',
                         type: 'custom',
                         linkid: parseInt(linkid)
                     },
-                    success: function(data){
-                        if (data.code == 200){
+                    success: function (data) {
+                        if (data.code == 200) {
                             toastr.success('删除成功');
                             refreshTable();
                         } else {
                             toastr.error('删除失败');
                         }
                     },
-                    error: function(err){
+                    error: function (err) {
                         toastr.error('删除失败');
                     }
                 })
