@@ -95,7 +95,33 @@
 
             if (flag_emptyItem) {
                 toastr.error('有输入项为空，请检查。');
+                return;
             }
+
+            submitSiteForm(sitename);
+        }
+
+        function submitSiteForm(sitename){
+            $.ajax({
+                url: '/manage/siteinfo.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'update',
+                    type: 'site',
+                    sitename: sitename
+                },
+                success: function(res){
+                    if (res.code == 200){
+                        toastr.success('操作成功');
+                    } else {
+                        toastr.error('操作失败: '+res.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                }
+            })
         }
 
         function checkDBForm() {
@@ -133,7 +159,35 @@
 
             if (flag_emptyItem) {
                 toastr.error('有输入项为空，请检查。');
+                return;
             }
+
+            //submit
+            $.ajax({
+                url: '/manage/siteinfo.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'update',
+                    type: 'db',
+                    dbhost: dbhost,
+                    dbport: dbport,
+                    dbname: dbname,
+                    dbuser: dbuser,
+                    dbpassword: dbpassword
+                },
+                success: function(res){
+                    if (res.code == 200){
+                        toastr.success('操作成功');
+                    } else {
+                        toastr.error('操作失败: '+res.error);
+                    }
+                },
+                error: function(err){
+                    toastr.error('操作失败');
+                    console.error(err);
+                }
+            });
         }
     </script>
     <style>
