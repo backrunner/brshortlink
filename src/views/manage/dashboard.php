@@ -88,7 +88,6 @@
                     <a class="menu-sideline"></a><i class="fa fa-sitemap"></i><span>站点</span>
                     <a class="treeview-toggle"><i class="fa fa-caret-left"></i></a>
                     <dl class="treeview">
-                        <dd data-item="site">站点管理</dd>
                         <dd data-item="accesslog">访问日志</dd>
                     </dl>
                 </li>
