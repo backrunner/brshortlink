@@ -155,11 +155,11 @@
                         toastr.success('删除成功');
                         refreshTable();
                     } else {
-                        toastr.error('操作失败：' + data.error);
+                        toastr.error('操作失败：'+ data.error);
                     }
                 },
                 error: function (err) {
-                    console.error(err);
+                    console.error(err); 
                     toastr.error('操作失败');
                 }
             });

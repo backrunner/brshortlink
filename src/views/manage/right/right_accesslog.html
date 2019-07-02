@@ -42,7 +42,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>您确定要删除7天前的所有登录日志吗？</p>
+                    <p>您确定要删除30天前的所有登录日志吗？</p>
                     <p>该操作不可逆，日志一旦删除将无法恢复。</p>
                 </div>
                 <div class="modal-footer">
@@ -119,6 +119,31 @@
 
         function refreshTable(){
             $("#table-accesslog").bootstrapTable('refresh');
+        }
+
+        function delete_log(day) {
+            $.ajax({
+                url: '/manage/log.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'deletelog',
+                    type: 'accesslog',
+                    day: day
+                },
+                success: function(res){
+                    if (res.code == 200){
+                        toastr.success('删除成功');
+                        refreshTable();
+                    } else {
+                        toastr.success('操作失败: '+res.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                    toastr.error('操作错误');
+                }
+            });
         }
     </script>
 </div>

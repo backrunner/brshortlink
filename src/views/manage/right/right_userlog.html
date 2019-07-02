@@ -25,7 +25,7 @@
                     <p>该操作不可逆，日志一旦删除将无法恢复。</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_log(7);" data-dismiss="modal">确认</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                     <p>该操作不可逆，日志一旦删除将无法恢复。</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_log(30);" data-dismiss="modal">确认</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                     <p>该操作不可逆，日志一旦被清空将无法恢复。</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">确认</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="delete_log('all');">确认</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -125,6 +125,31 @@
 
         function refreshTable() {
             $("#table-userlog").bootstrapTable('refresh');
+        }
+
+        function delete_log(day) {
+            $.ajax({
+                url: '/manage/log.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'deletelog',
+                    type: 'userlog',
+                    day: day
+                },
+                success: function(res){
+                    if (res.code == 200){
+                        toastr.success('删除成功');
+                        refreshTable();
+                    } else {
+                        toastr.success('操作失败: '+res.error);
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                    toastr.error('操作错误');
+                }
+            });
         }
     </script>
 </div>
