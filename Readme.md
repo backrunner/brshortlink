@@ -19,10 +19,18 @@ bower, gulp, gulp-less, gulp-clean-css, gulp-rename, gulp-uglify, gulp-htmlmin
 ```bash
 npm install -g bower
 npm install -g gulp
-npm install gulp-less gulp-clean-css gulp-rename gulp-uglift gulp-htmlmin --save-dev
+npm install del gulp-less gulp-clean-css gulp-rename gulp-concat gulp-uglify gulp-htmlmin --save-dev
 ```
 
 ## 使用方式
+
+### 获取发行的版本
+
+在GitHub的Release页面可以获得本项目已经打包好的发行版本，解压到Web环境下即可使用。
+
+国内下载地址：[1.0](https://static.backrunner.top/brshortlink/1.0/brshortlink.zip)
+
+### 从Git获取
 
 使用Git拉取本项目或直接下载源码，之后在项目根目录执行以下命令补齐依赖：
 
@@ -49,21 +57,19 @@ gulp clean-build
 
 3、修改config.php内的相关配置。
 
-如果你不想自己手动打包，你也可以选择直接使用已经打包好的发行版本（>=1.0），但这种做法是不推荐的。
-
 ## 开发计划
 
 - [x] 安装时新增用户表、管理员用户设置，普通短链接表添加一个hash用于建立索引
 - [x] 本地的短链接生成服务
-- [ ] php、Apache模块检测
+- [ ] php、Apache版本检测
 - [ ] 短链接的HTML代码显示
 - [x] 添加过期时间（DateTimePicker）
 - [x] 短链接跳转
-- [ ] 管理面板的基础（登录登出）
-- [ ] 管理员管理
-- [ ] 链接管理
+- [x] 管理面板的基础（登录登出）
+- [x] 管理员管理
+- [x] 链接管理
 - [x] 统计
-- [ ] 统计查询
-- [ ] Api指南
-- [ ] 安装页的表单检查
+- [x] 统计查询
+- [ ] API及API指南
+- [x] 安装页的表单检查
 - [x] 换一个更快的url检查正则

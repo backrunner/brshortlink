@@ -83,7 +83,7 @@ if ($_GET['action'] == 'shortlink'){
                     return;
                 }
                 //测试是否为保留字
-                $reserved = ['manage','install','static'];
+                $reserved = ['manage','install','static','api'];
                 if (in_array($custom_link, $reserved)){
                     echo json_encode(array('type'=>'error','error_code'=>406,'error'=>'请勿使用保留字作为自定义短链接。'));
                     return;
