@@ -8,7 +8,7 @@
 
 ## 运行环境
 
-php 7.2(with bcmath module), MySQL 5.7, Apache 2.4.x
+php 7.x(with bcmath module), MySQL 5.7, Apache 2.4.x，推荐直接部署Wamp或者Lamp
 
 打包本项目需要：
 
@@ -56,6 +56,12 @@ gulp clean-build
 2、复制站点根目录下的config.default.php，更名为config.php。
 
 3、修改config.php内的相关配置。
+
+## Demo
+
+已正式投入使用：[pwp.space](https://pwp.space)
+
+由于Demo在生产环境下，故后台部分不便于展示，如需预览后台方面的效果，可在本地Web环境下进行预览和测试。
 
 ## 开发计划
 
