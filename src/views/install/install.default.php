@@ -56,6 +56,14 @@
             </div>
             <?php }?>
         </div>
+        <?php if (!extension_loaded('bcmath')){?>
+        <div class="row">
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                警告：未检测到可用的bcmath扩展，站点将不可用！
+            </div>
+        </div>
+        <?php }?>
         <div class="row">
             <div class="col-lg-12 header">
                 <h3>站点信息配置</h3>
@@ -98,8 +106,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-sm-2"><label>端口</label></div>
-                        <div class="col-sm-10"><input type="number" id="i-dbport" max="65535" class="form-control"
-                                value="<?php echo defined('DB_PORT')?DB_PORT:'3306'?>"></div>
+                        <div class="col-sm-10"><input type="number" id="i-dbport" max="65535" class="form-control" value="<?php echo defined('DB_PORT')?DB_PORT:'3306'?>"></div>
                     </div>
                     <div class="form-row">
                         <div class="col-sm-2"><label>数据库名称</label></div>
@@ -116,15 +123,13 @@
                     <mhide>
                         <div class="form-row">
                             <div class="col-sm-10"></div>
-                            <div class="col-sm-2"><button class="btn btn-block btn-primary" id="btn-submitinstall"
-                                    onclick="submitInstall();">安装</button></div>
+                            <div class="col-sm-2"><button class="btn btn-block btn-primary" id="btn-submitinstall" onclick="submitInstall();">安装</button></div>
                         </div>
                     </mhide>
                     <mvisi>
                         <div class="form-row">
                             <div class="col-sm-2"><label>安装</label></div>
-                            <div class="col-sm-10"><button class="btn btn-block btn-primary" id="btn-submitinstall-mobile"
-                                    onclick="submitInstall();">安装</button></div>
+                            <div class="col-sm-10"><button class="btn btn-block btn-primary" id="btn-submitinstall-mobile" onclick="submitInstall();">安装</button></div>
                         </div>
                     </mvisi>
                 </div>
@@ -144,39 +149,39 @@
             var mgusername = $('#i-mgusername').val();
             var mgpassword = $('#i-mgpassword').val();
             let flag_check = false;
-            if (sitename.length < 1){
+            if (sitename.length < 1) {
                 $('#i-sitename').addClass('is-invalid');
                 flag_check = true;
             }
-            if (dbhost.length < 1){
+            if (dbhost.length < 1) {
                 $('#i-dbhost').addClass('is-invalid');
                 flag_check = true;
             }
-            if (dbport.length < 1){
+            if (dbport.length < 1) {
                 $('#i-dbport').addClass('is-invalid');
                 flag_check = true;
             }
-            if (dbname.length < 1){
+            if (dbname.length < 1) {
                 $('#i-dbname').addClass('is-invalid');
                 flag_check = true;
             }
-            if (dbusername.length < 1){
+            if (dbusername.length < 1) {
                 $('#i-dbusername').addClass('is-invalid');
                 flag_check = true;
             }
-            if (dbpassword.length < 1){
+            if (dbpassword.length < 1) {
                 $('#i-dbpassword').addClass('is-invalid');
                 flag_check = true;
             }
-            if (mgusername.length < 1){
+            if (mgusername.length < 1) {
                 $('#i-mgusername').addClass('is-invalid');
                 flag_check = true;
             }
-            if (mgpassword.length < 1){
+            if (mgpassword.length < 1) {
                 $('#i-mgpassword').addClass('is-invalid');
                 flag_check = true;
             }
-            if (flag_check){
+            if (flag_check) {
                 toastr.error('有表单项未填写，请检查表单。');
                 return;
             }
