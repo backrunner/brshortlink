@@ -119,7 +119,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-right" id="container-right">
+        <div class="container-right" id="container-right" style="z-index: 0">
             <?php
             if (isset($_GET['p'])){
                 switch($_GET['p']){
